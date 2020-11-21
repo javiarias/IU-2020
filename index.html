@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script class="cssdeck" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <!-- Esto aparece como título de la ventana o pestaña en el navegador: cámbialo -->
+    <title>Printer</title>
+</head>
+
+<body>
+
+    <!-- JavaScript -->
+    <!-- jQuery primero, Bootstrap después -->
+
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/bootstrap.bundle.js"></script>
+
+
+    <!-- todos los scripts de interaccion, aqui -->
+
+    <script src="js/pmgr.js" type="module"></script>
+ 
+    <!--Pestañas superiores-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" >
+                    <button id="displayPrinter" class="btn btn-outline-primary" type="button">Impresoras</button>
+                </li>
+                <li class="nav-item">
+                    <button id="displayGroups" class="btn btn-outline-secondary" type="button">Grupos</button>
+                </li>
+                <li class="nav-item">
+                    <button id="displayJobs" class="btn btn-outline-secondary" type="button">Trabajos</button>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+    <!-- Pop Ups de añadir, eliminar etc-->
+
+    <!--Añadir-->
+    <div class="modal fade" tabindex="-1" id="addImp" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Añade impresora</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Alias -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Alias</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Grupo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Grupo</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Seleciona impresora -->
+            <div class="modal-body">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Selecciona impresora
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Impresora 1</a>
+                  <a class="dropdown-item" href="#">Impresora 2</a>
+                  <a class="dropdown-item" href="#">Impresora 3</a>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+     <!--Crear Grupo-->
+     <div class="modal fade" tabindex="-1" id="addGrupo" style="display: hidden;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Crear grupo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!-- Grupo -->
+          <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Nombre Grupo</span>
+                  </div>
+                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                </div>
+          </div>
+          <!-- Seleciona impresoras -->
+          <div class="modal-body">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Selecciona impresoras en el grupo
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Impresora 1</a>
+                <a class="dropdown-item" href="#">Impresora 2</a>
+                <a class="dropdown-item" href="#">Impresora 3</a>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Editar Grupo-->
+    <div class="modal fade" tabindex="-1" id="editGrupo" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edita grupo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Grupo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Grupo</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Modelo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Modelo</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Estado -->
+            <div class="modal-body">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Estado</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                </div>
+             </div>
+             <!-- Localizacion -->
+            <div class="modal-body">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Localizacion</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Editar-->
+    <div class="modal fade" tabindex="-1" id="editImp" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edita impresora</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Alias -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Alias</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Grupo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Grupo</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Modelo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Modelo</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Estado -->
+            <div class="modal-body">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Estado</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                </div>
+             </div>
+             <!-- Localizacion -->
+            <div class="modal-body">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Localizacion</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                </div>
+            </div>
+            <!-- IP -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">IP</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                    </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Eliminar-->
+    <div class="modal fade" tabindex="-1" id="rmImp" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content justify-content-center">
+            <div class="modal-header">
+              <h5 class="modal-title">Elimina impresora</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+            ¿Quiere eliminar esta impresora?
+            </div>
+            
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary">Si</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Eliminar Grupo-->
+    <div class="modal fade" tabindex="-1" id="rmGrupo" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content justify-content-center">
+            <div class="modal-header">
+              <h5 class="modal-title">Borra grupo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+            ¿Quiere borrar este grupo?
+            </div>
+            
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary">Si</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Imprimir Tab Printer-->
+    <div class="modal fade" tabindex="-1" id="print" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Imprimir archivo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Archivo -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Archivo</span>
+                    </div>
+                    <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                    <button type="button" class="btn btn-primary">Examinar</button>
+                </div>
+                
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+     <!--Imprimir Tab Groups-->
+     <div class="modal fade" tabindex="-1" id="printG" style="display: hidden;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Imprimir archivo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!-- Archivo -->
+          <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Archivo</span>
+                  </div>
+                  <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  <button type="button" class="btn btn-primary" >Examinar</button>
+              </div>              
+          </div>
+          
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+  </div>
+    <!-- Detalles-->
+    <div class="modal fade" tabindex="-1" id="details" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Caracteristicas a mostrar</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>            
+            <div class="modal-body">
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                  <label class="form-check-label" for="defaultCheck1">
+                  Modelo
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                  <label class="form-check-label" for="defaultCheck2">
+                  Alias
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
+                  <label class="form-check-label" for="defaultCheck3">
+                    Grupo
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck4">
+                  <label class="form-check-label" for="defaultCheck4">
+                  Estado
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck5">
+                  <label class="form-check-label" for="defaultCheck5">
+                    IP
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck6">
+                  <label class="form-check-label" for="defaultCheck6">
+                    Localizacion
+                  </label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck7">
+                  <label class="form-check-label" for="defaultCheck7">
+                    ID trabajo
+                  </label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- DetallesJobs-->
+    <div class="modal fade" tabindex="-1" id="detailsJobs" style="display: hidden;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Caracteristicas a mostrar</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>            
+          <div class="modal-body">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                <label class="form-check-label" for="defaultCheck1">
+                Id de Trabajo
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                <label class="form-check-label" for="defaultCheck2">
+                Impresora
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
+                <label class="form-check-label" for="defaultCheck3">
+                Nombre del Archivo
+                </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </div>
+      </div>
+  </div>    
+    <!--Stop-->
+    <div class="modal fade" tabindex="-1" id="stop" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content justify-content-center">
+            <div class="modal-header">
+              <h5 class="modal-title">Cancelar</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body justify-content-center">
+              ¿Quiere cancelar las impresiones de este grupo?
+            </div>
+            
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary">Si</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Stop Jobs-->
+    <div class="modal fade" tabindex="-1" id="stopJobs" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Cancelar</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            
+            <div class="modal-body justify-content-center">
+              ¿Quiere detener esta impresión?
+            </div>
+            
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary">Si</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+    
+    <!--//////////////////////////////////////PANTALLA IMPRESORAS/////////////////////////////////////////////////-->
+    <div id="printers" style="display: inline;">
+        <div class="container-fluid">
+            <!-- Cabecera tabla-->
+            <br>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="form-row justify-content-start">
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addImp">Añadir</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmImp">Eliminar</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp">Editar</button>
+                </div>
+                <div class="form-row justify-content-center">
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#print">Imprimir</button>
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stop">Cancelar</button>
+                </div>
+                <div class="form-row justify-content-end">            
+                    <div class="field" id="searchform">
+                        <input type="text" id="searchterm" placeholder="Buscar"/>
+                    
+                        <button type="submit" id="boton-publicar" class="btn btn-primary">Buscar</button>
+                        
+                        
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Filtro
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">Alias</a>
+                              <a class="dropdown-item" href="#">Grupo</a>
+                              <a class="dropdown-item" href="#">Modelo</a>
+                              <a class="dropdown-item" href="#">ID trabajo</a>
+                              <a class="dropdown-item" href="#">Localizacion</a>
+                              <a class="dropdown-item" href="#">Estado</a>
+                              <a class="dropdown-item" href="#">IP</a>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- Contenido tabla-->
+            <br>
+            <div class="row">
+                <div class="col-sm-11">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Alias</th>
+                            <th scope="col">State</th>
+                            <th scope="col">IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <th scope="row">1</th>
+                            <td>prynt_01</td>
+                            <td>READY</td>
+                            <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">2</th>
+                            <td>prynt_02</td>
+                            <td>NO PAPER</td>
+                            <td>192.5.6.32</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">3</th>
+                            <td>prynt_03</td>
+                            <td>PRINTING</td>
+                            <td>168.4.0.254</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">4</th>
+                            <td>prynt_04</td>
+                            <td>READY</td>
+                            <td>192.168.0.65</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">5</th>
+                            <td>prynt_05</td>
+                            <td>NO PAPER</td>
+                            <td>192.14.48.9</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">6</th>
+                            <td>prynt_06</td>
+                            <td>READY</td>
+                            <td>192.168.255.255</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">7</th>
+                            <td>prynt_07</td>
+                            <td>PAUSED</td>
+                            <td>192.168.0.0</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">8</th>
+                            <td>prynt_08</td>
+                            <td>READY</td>
+                            <td>192.16.0.1</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">9</th>
+                            <td>prynt_09</td>
+                            <td>NO PAPER</td>
+                            <td>168.4.5.1</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">10</th>
+                            <td>prynt_10</td>
+                            <td>PAUSED</td>
+                            <td>0.0.0.0</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">11</th>
+                            <td>prynt_11</td>
+                            <td>PAUSED</td>
+                            <td>187.4.0.65</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">12</th>
+                            <td>prynt_12</td>
+                            <td>POG</td>
+                            <td>192.14.48.9</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">13</th>
+                            <td>prynt_13</td>
+                            <td>NO INK</td>
+                            <td>192.98.255.255</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">14</th>
+                            <td>prynt_68</td>
+                            <td>NO PAPER</td>
+                            <td>192.168.0.0</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">15</th>
+                            <td>prynt_70</td>
+                            <td>NO INK</td>
+                            <td>192.98.0.255</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">16</th>
+                            <td>prynt_75</td>
+                            <td>NO PAPER</td>
+                            <td>192.0.0.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="col-sm-1">
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#details">Detalles</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!--//////////////////////////////////////PANTALLA GRUPOS/////////////////////////////////////////////////-->
+    <div id="groups" style="display: none;">
+        <div class="container-fluid">
+            <!-- Cabecera tabla-->
+            <br>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="form-row justify-content-start">
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo">Crear</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo">Borrar</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo">Editar</button>
+                </div>
+                <div class="form-row justify-content-center">
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#printG">Imprimir</button>
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stop">Cancelar</button>
+                </div>
+                <div class="form-row justify-content-end">            
+                    <div class="field" id="searchform">
+                        <input type="text" id="searchterm" placeholder="Buscar"/>
+                    
+                        <button type="submit" id="boton-publicar" class="btn btn-primary">Buscar</button>
+                        
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Filtro
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Alias</a>
+                            <a class="dropdown-item" href="#">Grupo</a>
+                            <a class="dropdown-item" href="#">Modelo</a>
+                            <a class="dropdown-item" href="#">ID trabajo</a>
+                            <a class="dropdown-item" href="#">Localizacion</a>
+                            <a class="dropdown-item" href="#">Estado</a>
+                            <a class="dropdown-item" href="#">IP</a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- Contenido tabla-->
+            <br>
+            <div class="row">
+                <div class="col-sm-11">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Alias</th>
+                            <th scope="col">State</th>
+                            <th scope="col">IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <th scope="row">1</th>
+                            <td>group_01</td>
+                            <td>READY</td>
+                            <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">2</th>
+                            <td>group_02</td>
+                            <td>NO PAPER</td>
+                            <td>192.5.6.32</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">3</th>
+                            <td>group_03</td>
+                            <td>PRINTING</td>
+                            <td>168.4.0.254</td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="col-sm-1">
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#details">Detalles</button>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!--//////////////////////////////////////PANTALLA JOBS/////////////////////////////////////////////////-->
+     <div id="jobs" style="display: none;">
+        <div class="container-fluid">
+            <!-- Cabecera tabla-->
+            <br>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="form-row justify-content-start">
+                  <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stopJobs">Cancelar</button>
+                </div>
+            </div>
+            <!-- Contenido tabla-->
+            <br>
+            <div class="row">
+                <div class="col-sm-11">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Archivo</th>
+                            <th scope="col">Impresora</th>
+                            <th scope="col">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <th scope="row">1</th>
+                              <td>prynt.pdf</td>
+                              <td>prynt_04</td>
+                              <td>PRINTING</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">2</th>
+                              <td>ManifiestoComunista.png</td>
+                              <td>prynt_45</td>
+                              <td>DONE</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">3</th>
+                              <td>ManualDeHTML.exe</td>
+                              <td>prynt_200</td>
+                              <td>ERROR</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="col-sm-1">
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#detailsJobs">Detalles</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>
