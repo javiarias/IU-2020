@@ -2,3 +2,47 @@
 .msg {
     font-size: 60%;
 }
+
+button:hover{
+    background-color: #90e0ef;
+}
+
+button:active {
+    background-color: #00b4d8;
+}
+
+.appTableContainer {
+    text-align: center;    
+}
+
+.appTableContainer .appTable {
+    float:left;
+    margin:0;
+    height: 493px;
+    width: 1000px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.appTableDiv{
+    margin-left: 1%;
+}
+
+.detailsButton{
+    margin-left: 1%;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    margin-top:25px;
+    height: 180px;
+    overflow: auto;
+}
+
+.tableFixHead          { overflow-y: auto; height: 100px; }
+.tableFixHead thead th { position: sticky; top: 0; }
+
+
+table  { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 16px; }
+th     { background:#eee; }

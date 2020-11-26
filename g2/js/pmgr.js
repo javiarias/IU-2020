@@ -23,7 +23,6 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
-
 function createPrinterItem(printer) {
   const rid = 'x_' + Math.floor(Math.random()*1000000);
   const hid = 'h_'+rid;

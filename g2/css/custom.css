@@ -1,0 +1,114 @@
+/* usa este fichero para personalizar tus vistas */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
+
+.icon{
+    height:25px;
+}
+
+body{
+    background: linear-gradient(to top, #a5eaf8, #90e0ef, #caf0f8) no-repeat center fixed;
+    background-size: cover;
+    font-family: 'Nunito', sans-serif;
+}
+
+.impresoras{
+    float: left;
+}
+
+#tabla1{
+    display:flex;
+    margin-left: 1%;
+    margin-top: 60px;
+}
+
+#info-impres{
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.card{
+    float:left;
+    width:402px;
+}
+
+#tabla{
+    text-align: center;
+}
+
+#grupoTabla{
+    text-align: center;
+}
+
+#principalTabla{
+    float:right;
+    background-color: rgb(255, 255, 255);
+    margin:0;
+    margin-left:20px;
+    height: 493px;
+    margin-bottom: 40px;
+    text-align: center;
+    width:990px;
+}
+
+#nav{
+    margin-left: 1%;
+    margin-top: 15px;
+    width:35%;
+}
+
+#cola{
+    width:400px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align: center;
+}
+
+div.aceptar{
+    margin-top:25px;
+    margin-bottom:10px;
+    margin-left:190px;
+}
+
+div.aceptar2{
+    margin-top:25px;
+    margin-bottom:10px;
+    margin-left:210px;
+}
+
+.filtro{
+    margin-left: 10px;
+    border:none;
+    background:none;
+}
+
+#badge{
+    font-size:13px;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    margin-top:25px;
+    height: 180px;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+#cbox1{
+    margin-top:25px;
+}
+
+
+button:hover{
+    background-color: #90e0ef;
+}
+
+button:active {
+    background-color: #00b4d8;
+}
+
