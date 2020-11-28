@@ -1,6 +1,8 @@
 "use strict"
 
 import * as Pmgr from './pmgrapi.js'
+let MAXPRINTERS = 10;
+let impresoras = new Array();
 
 /**
  * Librería de cliente para interaccionar con el servidor de PrinterManager (prmgr).
@@ -65,7 +67,45 @@ function createPrinterItem(printer) {
     </div>
  `;
 }
+//$("#tablePrinters").click(function(){
+//  $(this).addClass('selected').siblings().removeClass('selected');     
+//});
 
+//document.getElementById("myBtn").onclick = function() {myFunction()};
+
+
+function generar_tabla(){
+ 
+  for(let id = 0; id < MAXPRINTERS; id++){
+      impresoras.push(Pmgr.Util.randomPrinter(id));
+  }
+  
+
+ let myTable= "<table class=table table-bordered mb-0 table-hover>";
+
+ myTable+= " <thead><tr>";
+ myTable+= "<th headers=co-alias>Alias</th>";
+ myTable+= "<th headers=co-modelo>Modelo</th>";
+ myTable+= "<th headers=co-local>Localizacion</th>";
+ myTable+= "<th headers=co-ip>IP</th>";
+ myTable+= "<th headers=co-gr>Grupos</th>";
+ myTable+= "<th headers=co-est>Estado</th></tr></thead>";
+ myTable+= "<tbody>";
+
+ for (let i = 0; i < impresoras.length; i++) {
+       //myTable+="<tr><td>" + impresoras[i].id + "</td>"; 
+       myTable+="<tr><td>" + impresoras[i].alias + "</td>";    
+       myTable+="<td>" + impresoras[i].modelo + "</td>";  
+       myTable+="<td>" + impresoras[i].location + "</td>";
+       myTable+="<td>" + impresoras[i].ip + "</td>"; 
+       myTable+="<td>" + impresoras[i].groups + "</td>";
+       myTable+="<td>" + impresoras[i].status + "</td>";    
+       myTable+="</tr>";
+ }
+   
+   myTable+="</tbody></table>";
+   document.getElementById('tablePrinters').innerHTML = myTable;
+}
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
 // se puede no-usar, o modificar libremente
 async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount) {
@@ -167,6 +207,9 @@ $(function() {
   });
 });
 
+$(document).ready(function(){
+  generar_tabla();
+});
 // cosas que exponemos para usarlas desde la consola
 window.populate = populate
 window.Pmgr = Pmgr;
