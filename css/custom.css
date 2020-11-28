@@ -38,6 +38,12 @@ button:active {
     height: 180px;
     overflow: auto;
 }
+td {border: 1px #DDD solid; padding: 5px; cursor: pointer;}
+
+.selected {
+       background-color: #c6d6df;
+       color: rgb(0, 0, 0);
+}
 
 .tableFixHead          { overflow-y: auto; height: 100px; }
 .tableFixHead thead th { position: sticky; top: 0; }
@@ -45,4 +51,4 @@ button:active {
 
 table  { border-collapse: collapse; width: 100%; }
 th, td { padding: 8px 16px; }
-th     { background:#eee; }
+th     { background:rgb(112, 163, 202);  color: rgb(255, 255, 255); }

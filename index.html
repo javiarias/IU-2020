@@ -9,9 +9,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/custom.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    
     <script class="cssdeck" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
     <!-- Esto aparece como título de la ventana o pestaña en el navegador: cámbialo -->
     <title>Printer</title>
 </head>
@@ -49,13 +50,13 @@
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addImp">Añadir</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmImp">Eliminar</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp">Editar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addImp" id="addPrinterButton">Añadir</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmImp" id="rmPrinterButton" disabled>Eliminar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp" id="editPrinterButton" disabled>Editar</button>
                   </div>
                   <div class="form-row justify-content-center">
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#print">Imprimir</button>
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stop">Cancelar</button>
+                      <button type="submit" id="printPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#print" disabled>Imprimir</button>
+                      <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#stop" disabled>Cancelar</button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="field" id="searchform">
@@ -86,7 +87,6 @@
                   <table class="table table-bordered mb-0 table-hover" id ="tablePrinters">
                     
                   </table>
-                  <input type="button" id="tst" value="OK" onclick="fnselect()" />
                 </div>
               </div>
 
@@ -738,8 +738,6 @@
 
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
-
-
     <!-- todos los scripts de interaccion, aqui -->
 
     <script src="js/pmgr.js" type="module"></script>

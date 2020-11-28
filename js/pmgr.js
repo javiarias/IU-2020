@@ -4,6 +4,7 @@ import * as Pmgr from './pmgrapi.js'
 let MAXPRINTERS = 10;
 let impresoras = new Array();
 
+
 /**
  * Librería de cliente para interaccionar con el servidor de PrinterManager (prmgr).
  * Prácticas de IU 2020-21
@@ -71,17 +72,32 @@ function createPrinterItem(printer) {
 //  $(this).addClass('selected').siblings().removeClass('selected');     
 //});
 
+//cuando se pulsa myBtn se llama a myFunction
 //document.getElementById("myBtn").onclick = function() {myFunction()};
+
+
+let table = document.getElementById('tablePrinters'), 
+selected = table.getElementsByClassName('selected');
+table.onclick = highlight;
+function highlight(e) {
+  if (selected[0]) selected[0].className = '';
+  e.target.parentNode.className = 'selected';
+
+  document.getElementById('rmPrinterButton').disabled = false;
+  document.getElementById('editPrinterButton').disabled = false;
+  document.getElementById('printPrinterButton').disabled= false;
+  document.getElementById('cancelPrinterButton').disabled= false;
+
+  
+}
+
+
 
 
 function generar_tabla(){
  
-  for(let id = 0; id < MAXPRINTERS; id++){
-      impresoras.push(Pmgr.Util.randomPrinter(id));
-  }
-  
 
- let myTable= "<table class=table table-bordered mb-0 table-hover>";
+ let myTable= "<table class=table table-bordered mb-0 table-hover display>";
 
  myTable+= " <thead><tr>";
  myTable+= "<th headers=co-alias>Alias</th>";
@@ -93,8 +109,9 @@ function generar_tabla(){
  myTable+= "<tbody>";
 
  for (let i = 0; i < impresoras.length; i++) {
-       //myTable+="<tr><td>" + impresoras[i].id + "</td>"; 
-       myTable+="<tr><td>" + impresoras[i].alias + "</td>";    
+       //myTable+="<tr><td>" + impresoras[i].id + "</td>";  
+       myTable+="<tr>";
+       myTable+="<td>" + impresoras[i].alias + "</td>";    
        myTable+="<td>" + impresoras[i].modelo + "</td>";  
        myTable+="<td>" + impresoras[i].location + "</td>";
        myTable+="<td>" + impresoras[i].ip + "</td>"; 
@@ -205,9 +222,13 @@ $(function() {
         update();
     }
   });
-});
+}); 
+
 
 $(document).ready(function(){
+  for(let id = 0; id < MAXPRINTERS; id++){
+    impresoras.push(Pmgr.Util.randomPrinter(id));
+  }
   generar_tabla();
 });
 // cosas que exponemos para usarlas desde la consola
