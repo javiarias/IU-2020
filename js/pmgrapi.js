@@ -226,6 +226,7 @@ class Util {
         for (let p of printers) {
             if (Util.randomInRange(0, 100) < percentageProbabilityToInclude) {
                 g.printers.push(p.id);
+                p.group = g.name;
             }
         }
         return g;

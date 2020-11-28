@@ -55,12 +55,12 @@
                       <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp" id="editPrinterButton" disabled>Editar</button>
                   </div>
                   <div class="form-row justify-content-center">
-                      <button type="submit" id="printPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#print" disabled>Imprimir</button>
-                      <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#stop" disabled>Cancelar</button>
+                      <button type="submit" id="printPrinterButton" class="btn btn-primary" data-toggle="modal"  data-target="#print" disabled>Imprimir</button>
+                      <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#cancel" disabled>Cancelar</button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="field" id="searchform">
-                          <input type="text" id="searchterm" placeholder="Buscar"/>
+                          <input type="text" id="searchtermPrint" placeholder="Buscar"/>
                       
                           <button type="submit" id="boton-publicar" class="btn btn-primary">Buscar</button>
                           
@@ -84,8 +84,7 @@
               <br>
               <div class="container appTableContainer" id="printersContainer">
                 <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="printersTable">
-                  <table class="table table-bordered mb-0 table-hover" id ="tablePrinters">
-                    
+                  <table class="table table-bordered mb-0 table-hover" id ="tablePrinters">    
                   </table>
                 </div>
               </div>
@@ -143,19 +142,19 @@
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo">Crear</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo">Borrar</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo">Editar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo" id="addGroupButton">Crear</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo" id="rmGroupButton" disabled>Borrar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo" id="editGroupButton" disabled>Editar</button>
                   </div>
-                  <div class="form-row justify-content-center">
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#printG">Imprimir</button>
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stop">Cancelar</button>
+                  <div class="form-row justify-content-center">          
+                      <button type="submit" id="printGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#printG" disabled>Imprimir</button>
+                      <button type="submit" id="cancelGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#cancelGroups" disabled>Cancelar</button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="field" id="searchform">
-                          <input type="text" id="searchterm" placeholder="Buscar"/>
+                          <input type="text" id="searchtermGroup" placeholder="Buscar"/>
                       
-                          <button type="submit" id="boton-publicar" class="btn btn-primary">Buscar</button>
+                          <button type="submit" id="searchGroups" class="btn btn-primary">Buscar</button>
                           
                           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               Filtro
@@ -175,46 +174,15 @@
               </div>
               <!-- Contenido tabla-->
               <br>
-              <div class="row">
-                  <div class="col-sm-11">
-                      <table class="table">
-                          <thead class="thead-dark">
-                              <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">Alias</th>
-                              <th scope="col">State</th>
-                              <th scope="col">IP</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                              <th scope="row">1</th>
-                              <td>group_01</td>
-                              <td>READY</td>
-                              <td>192.168.0.1</td>
-                              </tr>
-                              <tr>
-                              <th scope="row">2</th>
-                              <td>group_02</td>
-                              <td>NO PAPER</td>
-                              <td>192.5.6.32</td>
-                              </tr>
-                              <tr>
-                              <th scope="row">3</th>
-                              <td>group_03</td>
-                              <td>PRINTING</td>
-                              <td>168.4.0.254</td>
-                              </tr>
-                              
-                              
-                          </tbody>
-                      </table>
-                  </div>
-                  
-                  <div class="col-sm-1">
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#details">Detalles</button>
-                  </div>
+              <div class="container appTableContainer" id="printersContainer">
+                <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="groupsTable">
+                  <table class="table table-bordered mb-0 table-hover" id ="tableGroups">    
+                  </table>
+                </div>
               </div>
+              
+              <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#details">Detalles</button>
+            
           </div>
       </div>
 
@@ -225,49 +193,19 @@
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stopJobs">Cancelar</button>
+                    <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#stopJobs"id="cancelJobsButton" disabled>Cancelar</button>
                   </div>
               </div>
               <!-- Contenido tabla-->
               <br>
-              <div class="row">
-                  <div class="col-sm-11">
-                      <table class="table">
-                          <thead class="thead-dark">
-                              <tr>
-                              <th scope="col">#</th>
-                              <th scope="col">Archivo</th>
-                              <th scope="col">Impresora</th>
-                              <th scope="col">Estado</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                <th scope="row">1</th>
-                                <td>prynt.pdf</td>
-                                <td>prynt_04</td>
-                                <td>PRINTING</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">2</th>
-                                <td>ManifiestoComunista.png</td>
-                                <td>prynt_45</td>
-                                <td>DONE</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">3</th>
-                                <td>ManualDeHTML.exe</td>
-                                <td>prynt_200</td>
-                                <td>ERROR</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-                  
-                  <div class="col-sm-1">
-                      <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#detailsJobs">Detalles</button>
-                  </div>
+              <div class="container appTableContainer" id="printersContainer">
+                <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="jobsTable">
+                  <table class="table table-bordered mb-0 table-hover" id ="tableJobs">    
+                  </table>
+                </div>
               </div>
+              
+              <button type="submit" id="boton-publicar" class="btn btn-primary" data-toggle="modal" data-target="#detailsJobs">Detalles</button>
           </div>
       </div>
       </div>
@@ -322,6 +260,8 @@
         </div>
       </div>
     </div>
+
+
     <!--Crear Grupo-->
     <div class="modal fade" tabindex="-1" id="addGrupo" style="display: hidden;">
       <div class="modal-dialog">
@@ -366,7 +306,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Edita grupo</h5>
+              <h5 class="modal-title">Edita grupo <b id="nombreEdG"> </b></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -419,7 +359,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Edita impresora</h5>
+              <h5 class="modal-title">Editando impresora <b id="nombreEd"> </b></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -490,7 +430,7 @@
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
-              <h5 class="modal-title">Elimina impresora</h5>
+              <h5 class="modal-title">Eliminar impresora <b id="nombreEl"></b> </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -502,7 +442,7 @@
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary">Si</button>
+              <button type="button" class="btn btn-primary" id="confirmarElPr">Si</button>
             </div>
           </div>
         </div>
@@ -512,19 +452,19 @@
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
-              <h5 class="modal-title">Borra grupo</h5>
+              <h5 class="modal-title">Borrando grupo <b id="nombreElG"></b> </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
 
             <div class="modal-body">
-            ¿Quiere borrar este grupo?
+            ¿Quiere borrar el grupo?
             </div>
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary">Si</button>
+              <button type="button" class="btn btn-primary" id="confirmarElGr">Si</button>
             </div>
           </div>
         </div>
@@ -587,69 +527,6 @@
       </div>
     </div>
     
-
-
-    <!-- Detalles-->
-    <!--<div class="modal fade" tabindex="-1" id="details" style="display: hidden;">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Caracteristicas a mostrar</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>            
-            <div class="modal-body">
-              <div class="form-check">         
-                  <input class="form-check-input" type="checkbox" value="co-modelo" checked="checked" id="defaultCheck1">
-                  <label class="form-check-label" for="defaultCheck1">
-                  Modelo
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-alias" checked="checked" id="defaultCheck2">
-                  <label class="form-check-label" for="defaultCheck2">
-                  Alias
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-gr" checked="checked" id="defaultCheck3">
-                  <label class="form-check-label" for="defaultCheck3">
-                    Grupo
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-est" checked="checked" id="defaultCheck4">
-                  <label class="form-check-label" for="defaultCheck4">
-                  Estado
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-ip" checked="checked" id="defaultCheck5">
-                  <label class="form-check-label" for="defaultCheck5">
-                    IP
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-local" checked="checked" id="defaultCheck6">
-                  <label class="form-check-label" for="defaultCheck6">
-                    Localizacion
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="co-job" checked="checked" id="defaultCheck7">
-                  <label class="form-check-label" for="defaultCheck7">
-                    ID trabajo
-                  </label>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary">Guardar cambios</button>
-            </div>
-          </div>
-        </div>
-    </div>-->
     <!-- DetallesJobs-->
     <div class="modal fade" tabindex="-1" id="detailsJobs" style="display: hidden;">
       <div class="modal-dialog">
@@ -687,8 +564,8 @@
         </div>
       </div>
     </div>    
-    <!--Stop-->
-    <div class="modal fade" tabindex="-1" id="stop" style="display: hidden;">
+    <!--Cancel-->
+    <div class="modal fade" tabindex="-1" id="cancel" style="display: hidden;">
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
@@ -699,7 +576,7 @@
             </div>
 
             <div class="modal-body justify-content-center">
-              ¿Quiere cancelar las impresiones de este grupo?
+              ¿Quiere cancelar las impresiones la impresora <b id="nombreCa"></b>?
             </div>
             
             <div class="modal-footer justify-content-center">
@@ -709,24 +586,46 @@
           </div>
         </div>
     </div>
+     <!--Cancel Grupos-->
+        <div class="modal fade" tabindex="-1" id="cancelGroups" style="display: hidden;">
+          <div class="modal-dialog">
+            <div class="modal-content justify-content-center">
+              <div class="modal-header">
+                <h5 class="modal-title">Cancelar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+  
+              <div class="modal-body justify-content-center">
+                ¿Quiere cancelar las impresiones del grupo <b id="nombreCaG"> </b>?
+              </div>
+              
+              <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary">Si</button>
+              </div>
+            </div>
+          </div>
+      </div>
     <!--Stop Jobs-->
     <div class="modal fade" tabindex="-1" id="stopJobs" style="display: hidden;">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Cancelar</h5>
+              <h5 class="modal-title">Stop</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             
             <div class="modal-body justify-content-center">
-              ¿Quiere detener esta impresión?
+              ¿Quiere detener la impresion del archivo <b id="nombreCaJ"> </b>?
             </div>
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary">Si</button>
+              <button type="button" class="btn btn-primary" id="confirmarCaJo">Si</button>
             </div>
           </div>
         </div>
