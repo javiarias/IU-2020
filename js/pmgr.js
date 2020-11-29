@@ -48,19 +48,30 @@ function update()
 function generar_select_grupos()
 {
   let editSelect = document.getElementById('editGroupsPr');
+  let addSelect = document.getElementById('addGroupsPr');
 
   let groupOptions = "";
   
   Pmgr.globalState.groups.forEach(g => groupOptions += `<option value="${g.name}">${g.name}</option>`);
   
   editSelect.innerHTML = groupOptions;
+  addSelect.innerHTML = groupOptions;
   
   $("#editGroupsPr").multipleSelect('refresh');
+  $("#addGroupsPr").multipleSelect('refresh');
 }
 
 $("#editGroupsPr").multipleSelect();
+$("#addGroupsPr").multipleSelect();
 
 function createPrinterItem(printer) {
+
+  if(printer.status == Pmgr.PrinterStates.PAUSED && printer.queue.length > 0)
+    printer.status = Pmgr.PrinterStates.PRINTING;
+  else if(printer.status == Pmgr.PrinterStates.PRINTING && printer.queue.length == 0)
+    printer.status = Pmgr.PrinterStates.PAUSED;
+
+
   const rid = 'x_' + Math.floor(Math.random()*1000000);
   const hid = 'h_'+rid;
   const cid = 'c_'+rid;
@@ -176,6 +187,32 @@ function highlight(e) {
   }
 }
 
+$("#confirmarCaPr").click(function()
+{
+  
+  for(let i = 0; i < selected.length; i++)
+  {
+    let text = selected[i].innerText;
+    let arrayAux= text.split("\t");
+    let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
+
+    if(pr.status == Pmgr.PrinterStates.PRINTING)
+      pr.status = Pmgr.PrinterStates.PAUSED;
+
+    let id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
+    while (id >= 0)
+    {
+      Pmgr.globalState.jobs.splice(id, 1);
+
+      id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
+    }
+
+    pr.queue = [];
+  }
+
+  update();
+});
+
 document.getElementById('editStatePr').onchange = editStatePr;
 
 let editGroupsDisabled = false;
@@ -251,6 +288,101 @@ $("#editPrinterButton").click(function()
   input[5].children[0].children[1].value = location;
   input[6].children[0].children[1].value = ip;
   
+});
+
+$("#addImp").click(function()
+{
+    document.getElementById('confirmarAdPr').disabled = true;
+});
+
+$("#aliasAdPr").on("change keyup paste", function()
+{
+  document.getElementById('confirmarAdPr').disabled = (this.value == "");
+});
+
+$("#confirmarAdPr").click(function(e)
+{
+
+  let alias = document.getElementById('aliasAdPr').value;
+
+  let pr = new Pmgr.Printer(
+    ID_,
+    alias,
+    "",
+    "",
+    "",
+    [],
+    Pmgr.PrinterStates.PAUSED
+  );  
+
+  Pmgr.globalState.printers.push(pr);  
+  
+  let groupSel = $("#addGroupsPr").multipleSelect('getSelects');
+  
+  let idG = Pmgr.globalState.groups;
+  
+  for(let j = 0; j < groupSel.length; j++)
+  {
+    pr.group = groupSel[j];
+    
+    idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
+  }
+        
+  $("#addGroupsPr").multipleSelect('setSelects', []);
+
+  document.getElementById('aliasAdPr').value = "";
+
+  update();
+  ID_++;
+});
+
+$("#print").click(function()
+{
+    document.getElementById('confirmarPrPr').disabled = true;
+});
+
+$("#filePrPr").on("change keyup paste", function()
+{
+  document.getElementById('confirmarPrPr').disabled = (this.value == "");
+});
+
+$("#confirmarPrPr").click(function(e)
+{
+  
+  let file = document.getElementById('filePrPr').value;
+
+  let pr = "";
+  
+  for(let i = 0; i < selected.length; i++)
+  {
+    let text = selected[i].innerText;
+    let arrayAux= text.split("\t");
+    let auxPr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
+
+    if(pr == "" || pr.queue.length > auxPr.queue.length)
+      pr = auxPr;
+  }  
+    
+
+  let job = new Pmgr.Job(
+    ID_,
+    pr.id,
+    "",
+    file
+  );
+
+  pr.queue.push(job.id);
+
+  Pmgr.globalState.jobs.push(job);
+  
+
+  if(pr.status == Pmgr.PrinterStates.PAUSED)
+    pr.status = Pmgr.PrinterStates.PRINTING;
+
+  document.getElementById('filePrPr').value = "";
+
+  update();
+  ID_++;
 });
 
 $("#confirmarEdPr").click(function()

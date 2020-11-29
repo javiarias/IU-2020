@@ -232,19 +232,22 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">Alias</span>
                   </div>
-                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="aliasAdPr" value="">
                 </div>
           </div>
           <!-- Grupo -->
           <div class="modal-body">
-              <div class="input-group input-group-sm mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">Grupo</span>
-                  </div>
-                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Grupo</span>
                 </div>
-          </div>
+              
+                <select id="addGroupsPr" style="width: 100%;" multiple>
+                </select>
+              </div>
+        </div>
           <!-- Seleciona impresora -->
+          <!--
           <div class="modal-body">
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -257,9 +260,10 @@
               </div>
             </div>
           </div>
+          -->
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary"  data-dismiss="modal">Guardar cambios</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarAdPr" disabled>Guardar cambios</button>
           </div>
         </div>
       </div>
@@ -500,7 +504,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Archivo</span>
                     </div>
-                    <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                    <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="filePrPr">
                     <button type="button" class="btn btn-primary">Examinar</button>
                 </div>
                 
@@ -508,7 +512,7 @@
             
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarPrPr" disabled>Guardar cambios</button>
             </div>
           </div>
         </div>
@@ -596,7 +600,7 @@
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Si</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmarCaPr">Si</button>
             </div>
           </div>
         </div>
