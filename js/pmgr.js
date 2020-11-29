@@ -24,6 +24,41 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
+let MAX_SHOW_GROUPS = 4;
+let MAX_SHOW_PRINTERS = 4;
+let ID_ = 0;
+
+function update()
+{
+  generar_tabla();
+  generar_tabla_grupos();
+  generar_tabla_jobs();
+  generar_select_grupos();
+  
+  document.getElementById('rmPrinterButton').disabled = (selected.length == 0);
+  document.getElementById('editPrinterButton').disabled = (selected.length == 0);
+  document.getElementById('printPrinterButton').disabled= (selected.length == 0);
+  document.getElementById('cancelPrinterButton').disabled= (selected.length == 0);
+  document.getElementById('rmGroupButton').disabled = (selectedGroup.length == 0);
+  document.getElementById('editGroupButton').disabled = (selectedGroup.length == 0);
+  document.getElementById('printGroupButton').disabled= (selectedGroup.length == 0);
+  document.getElementById('cancelGroupButton').disabled= (selectedGroup.length == 0);
+}
+
+function generar_select_grupos()
+{
+  let editSelect = document.getElementById('editGroupsPr');
+
+  let groupOptions = "";
+  
+  Pmgr.globalState.groups.forEach(g => groupOptions += `<option value="${g.name}">${g.name}</option>`);
+  
+  editSelect.innerHTML = groupOptions;
+  
+  $("#editGroupsPr").multipleSelect('refresh');
+}
+
+$("#editGroupsPr").multipleSelect();
 
 function createPrinterItem(printer) {
   const rid = 'x_' + Math.floor(Math.random()*1000000);
@@ -41,31 +76,48 @@ function createPrinterItem(printer) {
      `<span class="badge badge-secondary">${id}</span>`
   ).join(" ");
 
-  return `
-    <div class="card">
-    <div class="card-header" id="${hid}">
-        <h2 class="mb-0">
-            <button class="btn btn-link" type="button"
-                data-toggle="collapse" data-target="#${cid}",
-                aria-expanded="false" aria-controls="#${rid}">
-            <b class="pcard">${printer.alias}</b>
-            <span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>
-            <div class="small">
-                ${printer.model} at ${printer.location}
-            </div>
-            </button>
-        </h2>
-    </div>
+  let myTable = "";
+  
+  myTable+="<tr><td>" + printer.id + "</td>";  
+  myTable+="<td>" + printer.alias + "</td>";    
+  myTable+="<td>" + printer.model + "</td>";  
+  myTable+="<td>" + printer.location + "</td>";
+  myTable+="<td>" + printer.ip + "</td>"; 
+  myTable+="<td>";
 
-    <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
-        data-parent="#accordionExample">
-        <div class="card-body pcard">
-            ${allJobs}
-    </div>
-    </div>
-    </div>
- `;
+  let i = 0;
+
+  for (let j = 0; j < Pmgr.globalState.groups.length; j++)
+  {
+    let idG = Pmgr.globalState.groups[j].printers.findIndex(element => printer.id == element);
+    if(idG >= 0)
+    {
+      if(i <= MAX_SHOW_PRINTERS)
+      {
+        myTable += `<span class="badge badge-pill badge-secondary">`;
+        myTable += Pmgr.globalState.groups[j].name;
+        myTable += `</span> `;
+      }
+      i++;
+    }
+  } 
+  if(i > MAX_SHOW_PRINTERS)
+  {
+    myTable += `<span class="badge badge-pill badge-secondary">+`;
+    myTable += i - MAX_SHOW_PRINTERS;
+    myTable += `</span> `;
+  }
+
+  myTable += "</td>";
+  myTable+="<td>"; 
+  myTable += `<span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>`;
+  myTable += "</td>";    
+  myTable+="</tr>";
+
+  return myTable;
 }
+
+
 //$("#tablePrinters").click(function(){
 //  $(this).addClass('selected').siblings().removeClass('selected');     
 //});
@@ -76,58 +128,239 @@ function createPrinterItem(printer) {
 
 
 //--------------------------------GENERA TABLA PRINTERS------------------------------------------
-  let tablaPrint = document.getElementById('tablePrinters'), 
+let tablaPrint = document.getElementById('tablePrinters'), 
 selected = tablaPrint.getElementsByClassName('selected');
 
 tablaPrint.onclick = highlight;
 function highlight(e) {
-  if (selected[0]) selected[0].className = '';
-  e.target.parentNode.className = 'selected';
 
-  document.getElementById('rmPrinterButton').disabled = false;
-  document.getElementById('editPrinterButton').disabled = false;
-  document.getElementById('printPrinterButton').disabled= false;
-  document.getElementById('cancelPrinterButton').disabled= false;
+  let target = e.target;
   
-  let text= selected[0].innerText;
-  let arrayAux= text.split("\t");
-  document.getElementById('nombreEd').innerHTML = arrayAux[1];  //Igual vale para poner los nombres
-  document.getElementById('nombreEl').innerHTML = arrayAux[1];  //Igual vale para poner los nombres
-  document.getElementById('nombreCa').innerHTML = arrayAux[1];  //Igual vale para poner los nombres
+  if(target.localName != "td")
+    return;
+
+  if(target.classList[0] == "badge")
+    target = target.parentNode;
+
+  if (target.parentNode.className == 'selected')
+    target.parentNode.className = '';
+  else
+    target.parentNode.className = 'selected';
+
+  selected = tablaPrint.getElementsByClassName('selected');
+
+  document.getElementById('rmPrinterButton').disabled = (selected.length == 0);
+  document.getElementById('editPrinterButton').disabled = (selected.length == 0);
+  document.getElementById('printPrinterButton').disabled= (selected.length == 0);
+  document.getElementById('cancelPrinterButton').disabled= (selected.length == 0);
   
+  if(selected.length == 1)
+  {
+    let text = selected[0].innerText;
+    let arrayAux= text.split("\t");
+    document.getElementById('nombreEd').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
+    document.getElementById('nombreEl').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2').innerHTML = "la impresora " + arrayAux[1];  //Igual vale para poner los nombres
+    document.getElementById('nombreCa').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
+    document.getElementById('nombreIm').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
+  }
+  
+  else if(selected.length > 1)
+  {
+    let text = "múltiples impresoras";
+    document.getElementById('nombreEd').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreIm').innerHTML = text;  //Igual vale para poner los nombres
+  }
 }
 
+document.getElementById('editStatePr').onchange = editStatePr;
+
+let editGroupsDisabled = false;
+
+$("#editCleanGroups").click(function()
+{  
+  editGroupsDisabled = !editGroupsDisabled;
+
+  setCleanGroups();
+});
+
+function setCleanGroups()
+{
+  if(editGroupsDisabled)
+  {
+    document.getElementById('editCleanGroups').textContent = "Cancelar limpiado de grupos";
+    $("#editGroupsPr").multipleSelect('disable');
+  }
+  else
+  {
+    document.getElementById('editCleanGroups').textContent = "Limpiar todos los grupos";
+    $("#editGroupsPr").multipleSelect('enable');
+  }
+}
+
+$("#editPrinterButton").click(function()
+{
+  let input = document.getElementById('editImp').children[0].children[0].children;
+  
+  let alias = "", model = "", location = "", ip = "", status = "";
+
+  if(selected.length == 1)
+  {
+    let gr = Pmgr.globalState.groups;
+    let text = selected[0].innerText;
+    let arrayAux= text.split("\t");    
+    let aux = document.getElementById('editGroupsPr').options;
+    let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
+    
+    let id = 0;
+
+    gr.forEach(g => {   
+      let idG = g.printers.findIndex(element => arrayAux[0] == element);
+      aux[id].removeAttribute('selected');
+      if(idG >= 0)
+        aux[id].setAttribute('selected', 'selected');
+      id++;
+    });
+  }
+  
+        
+  $("#editGroupsPr").multipleSelect('refresh');
+  
+  for(let i = 0; i < selected.length; i++)
+  {
+    let text = selected[i].innerText;
+    let arrayAux= text.split("\t");
+    let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
+
+    alias = (alias == "" || alias == pr.alias) ? pr.alias : "<múltiples valores>";
+    let x = "WIP";
+    model = (model == "" || model == pr.model) ? pr.model : "<múltiples valores>";
+    status = (status == "" || status == pr.status) ? pr.status : "<múltiples valores>";
+    location = (location == "" || location == pr.location) ? pr.location : "<múltiples valores>";
+    ip = (ip == "" || ip == pr.ip) ? pr.ip : "<múltiples valores>";
+  }
+  
+
+  input[1].children[0].children[1].value = alias;
+  input[2].children[0].children[1].value = "WIP";
+  input[3].children[0].children[1].value = model;
+  document.getElementById('editStatePr').value = status;
+  input[5].children[0].children[1].value = location;
+  input[6].children[0].children[1].value = ip;
+  
+});
+
+$("#confirmarEdPr").click(function()
+{  
+
+  let alias = "", model = "", location = "", ip = "", status = "";
+  
+  let input = document.getElementById('editImp').children[0].children[0].children;
+
+  let groupSel = $("#editGroupsPr").multipleSelect('getSelects');  
+    
+  let idG = Pmgr.globalState.groups;
+
+  if(editGroupsDisabled || selected.length == 1 || (groupSel.length > 0 && selected.length > 1))
+  {
+    idG.forEach(g => {
+      for(let i = 0; i < selected.length; i++)
+      {
+        let text = selected[i].innerText;
+        let arrayAux = text.split("\t");
+        
+        let idG = g.printers.findIndex(element => arrayAux[0] == element);
+        if(idG >= 0)
+          g.printers.splice(idG, 1);
+      }
+    });
+  }
+  
+
+  alias = input[1].children[0].children[1].value;
+  model = input[3].children[0].children[1].value;
+  status = document.getElementById('editStatePr').value;
+  location = input[5].children[0].children[1].value;
+  ip = input[6].children[0].children[1].value;
+
+  for(let i = 0; i < selected.length; i++)
+  {
+    let text = selected[i].innerText;
+    let arrayAux= text.split("\t");
+    let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
+
+    pr.alias = (alias == "" || alias == "<múltiples valores>") ? pr.alias : alias;
+    let x = "WIP";
+    pr.model = (model == "" || model == "<múltiples valores>") ? pr.model : model;
+    pr.status = (status == "" || status == "<múltiples valores>") ? pr.status : status;
+    pr.location = (location == "" || location == "<múltiples valores>") ? pr.location : location;
+    pr.ip = (ip == "" || ip == "<múltiples valores>") ? pr.ip : ip;
+
+    if(!editGroupsDisabled)
+    {
+      for(let j = 0; j < groupSel.length; j++)
+      {
+        pr.group = groupSel[j];
+        
+        idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
+      }
+    }
+  }
+
+  
+  editGroupsDisabled = false;
+
+  setCleanGroups();
+
+  update();
+});
+
+
 $("#confirmarElPr").click(function(){
-  let text= selected[0].innerText;
-  let arrayAux= text.split("\t");
-  Pmgr.rmPrinter(arrayAux[0]);
-  generar_tabla();
+
+  for (let i = 0; i < selected.length; i++)
+  { 
+    let text = selected[i].innerText;
+    let arrayAux= text.split("\t");
+    //Pmgr.rmPrinter(arrayAux[0]);
+
+    let id = Pmgr.globalState.printers.findIndex(element => arrayAux[1] == element.alias);
+
+    if(id >= 0)
+      Pmgr.globalState.printers.splice(id, 1);
+
+    
+    for (let j = 0; j < Pmgr.globalState.groups.length; j++)
+    {
+      let idG = Pmgr.globalState.groups[j].printers.findIndex(element => arrayAux[0] == element);
+      if(idG >= 0)
+        Pmgr.globalState.groups[j].printers.splice(idG, 1);
+    }
+  }
+
+  update();
 });
 
 function generar_tabla(){
 
- let myTable= "<table class=table table-bordered mb-0 table-hover display>";
+  let myTable= "<table class=table table-bordered mb-0 table-hover display>";
 
- myTable+= " <thead><tr>";
- myTable+= "<th headers=co-alias>ID</th>";
- myTable+= "<th headers=co-alias>Alias</th>";
- myTable+= "<th headers=co-modelo>Modelo</th>";
- myTable+= "<th headers=co-local>Localizacion</th>";
- myTable+= "<th headers=co-ip>IP</th>";
- myTable+= "<th headers=co-gr>Grupos</th>";
- myTable+= "<th headers=co-est>Estado</th></tr></thead>";
- myTable+= "<tbody>";
+  myTable+= " <thead><tr>";
+  myTable+= "<th headers=co-alias>ID</th>";
+  myTable+= "<th headers=co-alias>Alias</th>";
+  myTable+= "<th headers=co-modelo>Modelo</th>";
+  myTable+= "<th headers=co-local>Localizacion</th>";
+  myTable+= "<th headers=co-ip>IP</th>";
+  myTable+= "<th headers=co-gr>Grupos</th>";
+  myTable+= "<th headers=co-est>Estado</th></tr></thead>";
+  myTable+= "<tbody>";
 
- for (let i = 0; i < Pmgr.globalState.printers.length ; i++) {
-       myTable+="<tr><td>" + Pmgr.globalState.printers[i].id + "</td>";  
-       myTable+="<td>" + Pmgr.globalState.printers[i].alias + "</td>";    
-       myTable+="<td>" + Pmgr.globalState.printers[i].model + "</td>";  
-       myTable+="<td>" + Pmgr.globalState.printers[i].location + "</td>";
-       myTable+="<td>" + Pmgr.globalState.printers[i].ip + "</td>"; 
-       myTable+="<td>" + Pmgr.globalState.printers[i].group + "</td>";
-       myTable+="<td>" + Pmgr.globalState.printers[i].status + "</td>";    
-       myTable+="</tr>";
- }
+  for (let i = 0; i < Pmgr.globalState.printers.length ; i++) {
+    myTable += createPrinterItem(Pmgr.globalState.printers[i])
+  }
    
    myTable+="</tbody></table>";
    document.getElementById('tablePrinters').innerHTML = myTable;
@@ -173,14 +406,26 @@ function generar_tabla_grupos(){
  myTable+= "<tbody>";
 
  for (let i = 0; i < Pmgr.globalState.groups.length ; i++) {
-       myTable+="<tr><td>" +Pmgr.globalState.groups[i].id + "</td>";  
-       myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
-       myTable+="<td>";
-       for(let p=0; p<Pmgr.globalState.groups[i].printers.length; ++p ){
-         myTable+=  Pmgr.globalState.printers[Pmgr.globalState.groups[i].printers[p]].alias ;
-         myTable+= "--";
-       }
-       myTable+="</td></tr>";
+      myTable+="<tr><td>" +Pmgr.globalState.groups[i].id + "</td>";  
+      myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
+      myTable+="<td>";
+
+      for(let p = 0; p < Pmgr.globalState.groups[i].printers.length && p <= MAX_SHOW_GROUPS; ++p ){
+        let aux = Pmgr.globalState.groups[i].printers[p];
+        let print = Pmgr.globalState.printers.find(element => element.id == aux);
+        myTable +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
+        //myTable += "--";
+      }
+      
+      if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
+      {
+        myTable += `<span class="badge badge-pill badge-secondary">+`;
+        myTable += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
+        myTable += `</span> `;
+      }
+
+
+      myTable+="</td></tr>";
  }
 
    myTable+="</tbody></table>";
@@ -233,29 +478,38 @@ function generar_tabla_jobs(){
    myTable+="</tbody></table>";
    document.getElementById('tableJobs').innerHTML = myTable;
 }
+
+
+//--------------------------------OTRAS COSAS--------------------------------------------
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
 // se puede no-usar, o modificar libremente
 async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount) {
       const U = Pmgr.Util;
 
       // genera datos de ejemplo
+      minPrinters = 3;
+      maxPrinters = 3;
+      minGroups = 3;
+      maxGroups = 16;
+      jobCount = jobCount || 100;
+      /*
       minPrinters = minPrinters || 10;
       maxPrinters = maxPrinters || 20;
       minGroups = minGroups || 1;
       maxGroups = maxGroups || 7;
       jobCount = jobCount || 100;
-      let lastId = 0;
+      */
 
       let printers = U.fill(U.randomInRange(minPrinters, maxPrinters),
-          () => U.randomPrinter(lastId ++));
+          () => U.randomPrinter(ID_ ++));
 
-      let groups = U.fill(U.randomInRange(minPrinters, maxPrinters),
-          () => U.randomGroup(lastId ++, printers, 50));
+      let groups = U.fill(U.randomInRange(minGroups, maxGroups),
+          () => U.randomGroup(ID_ ++, printers, 50));
 
       let jobs = [];
       for (let i=0; i<jobCount; i++) {
           let p = U.randomChoice(printers);
-          let j = new Pmgr.Job(lastId++,
+          let j = new Pmgr.Job(ID_++,
             p.id,
             [
                 U.randomChoice([
@@ -302,7 +556,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
 $(document).ready(function() { 
   
   // funcion de actualización de ejemplo. Llámala para refrescar interfaz
-  function update(result) {
+  function update_(result) {
     try {
       // vaciamos un contenedor
       $("#accordionExample").empty();
@@ -335,9 +589,6 @@ $(document).ready(function() {
         let jobCount = 12;
 
         populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount);
-        generar_tabla();
-        generar_tabla_grupos();
-        generar_tabla_jobs();
         update();
     }
   });
