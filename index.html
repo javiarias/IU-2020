@@ -63,13 +63,13 @@
                       <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#cancel" disabled>Cancelar</button>
                   </div>
                   <div class="form-row justify-content-end">            
-                      <div class="field" id="searchform">
+                      <div class="form-row field" id="searchform">
                           <input type="text" id="searchtermPrint" placeholder="Buscar"/>
                       
                           <button type="submit" class="btn btn-primary">Buscar</button>
                           
-                          
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <div class="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                               Filtro
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -80,43 +80,58 @@
                               <a class="dropdown-item" href="#">Localizacion</a>
                               <a class="dropdown-item" href="#">Estado</a>
                               <a class="dropdown-item" href="#">IP</a>
-                            </div>                          
+                            </div>
+                          </div>
                       </div>
                   </div>
               </div>
               <!-- Contenido tabla-->
               <br>
+
+              
+              <button type="button" class="btn btn-primary" id="selectAllPr" style="position: absolute;">Seleccionar todo</button>
+
+              <div class="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="detailsPrinters" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
+                  Detalles
+                </button>
+                <div class="dropdown-menu" aria-labelledby="detailsPrinters">
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-alias" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-alias">Alias</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-model" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-model">Modelo</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-local" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-local">Localización</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-ip" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-ip">IP</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-groups" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-groups">Grupos</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-status" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-status">Estado</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-jobs" value="co-1" checked="checked"> 
+                    <label for="toggle-co-pr-jobs">Trabajos</label>
+                  </li>
+                </div>
+              </div>
+              
               <div class="container appTableContainer" id="printersContainer">
                 <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="printersTable">
                   <table class="table table-bordered mb-0 table-hover" id ="tablePrinters">    
                   </table>
                 </div>
-              </div>
-
-              <button class="btn btn-primary dropdown-toggle" type="button" id="detailsPrinters" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Detalles
-              </button>
-              <div class="dropdown-menu" aria-labelledby="detailsPrinters">
-                <li class="dropdown-item">
-                  <input type="checkbox" name="toggle-cols" id="toggle-col-1" value="co-1" checked="checked"> 
-                  <label for="toggle-col-1">Alias</label>
-                </li>
-                <li class="dropdown-item">
-                  <input type="checkbox" name="toggle-cols" id="toggle-col-1" value="co-1" checked="checked"> 
-                  <label for="toggle-col-1">Grupo</label>
-                </li>
-                <li class="dropdown-item">
-                  <input type="checkbox" name="toggle-cols" id="toggle-col-1" value="co-1" checked="checked"> 
-                  <label for="toggle-col-1">Modelo</label>
-                </li>
-                <li class="dropdown-item">
-                  <input type="checkbox" name="toggle-cols" id="toggle-col-1" value="co-1" checked="checked"> 
-                  <label for="toggle-col-1">Alias</label>
-                </li>
-                <li class="dropdown-item">
-                  <input type="checkbox" name="toggle-cols" id="toggle-col-1" value="co-1" checked="checked"> 
-                  <label for="toggle-col-1">Alias</label>
-                </li>
               </div>
               
               <!--NewDetalles
@@ -140,7 +155,7 @@
       </div>
 
     <!--//////////////////////////////////////PANTALLA GRUPOS/////////////////////////////////////////////////-->
-      <div class="tab-pane fade" id="groups" role="tabpanel" aria-labelledby="groups-tab">
+      <div class="tab-pane fade appTableDiv" id="groups" role="tabpanel" aria-labelledby="groups-tab">
           <div class="container-fluid">
               <!-- Cabecera tabla-->
               <br>
@@ -148,7 +163,8 @@
                   <div class="form-row justify-content-start">
                       <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo" id="addGroupButton">Crear</button>
                       <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo" id="rmGroupButton" disabled>Borrar</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo" id="editGroupButton" disabled>Editar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo" id="editGroupButton" disabled>Editar Grupo</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupoCont" id="editGroupContentsButton" disabled>Editar Contenidos</button>
                   </div>
                   <div class="form-row justify-content-center">          
                       <button type="submit" id="printGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#printG" disabled>Imprimir</button>
@@ -178,20 +194,36 @@
               </div>
               <!-- Contenido tabla-->
               <br>
-              <div class="container appTableContainer" id="printersContainer">
+              
+              <button type="button" class="btn btn-primary" id="selectAllGr" style="position: absolute;">Seleccionar todo</button>
+
+              <div class="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="detailsGroups" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
+                  Detalles
+                </button>
+                <div class="dropdown-menu" aria-labelledby="detailsGroups">
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-name" value="co-1" checked="checked"> 
+                    <label for="toggle-co-gr-name">Nombre</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-printers" value="co-1" checked="checked"> 
+                    <label for="toggle-co-gr-printers">Impresoras</label>
+                  </li>
+                </div>
+              </div>
+
+              <div class="container appTableContainer" id="groupsContainer">
                 <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="groupsTable">
                   <table class="table table-bordered mb-0 table-hover" id ="tableGroups">    
                   </table>
                 </div>
               </div>
-              
-              <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#details">Detalles</button>
-            
           </div>
       </div>
 
       <!--//////////////////////////////////////PANTALLA JOBS/////////////////////////////////////////////////-->
-      <div class="tab-pane fade" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
+      <div class="tab-pane fade appTableDiv" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
           <div class="container-fluid">
               <!-- Cabecera tabla-->
               <br>
@@ -202,16 +234,36 @@
               </div>
               <!-- Contenido tabla-->
               <br>
-              <div class="container appTableContainer" id="printersContainer">
+              
+              <button type="button" class="btn btn-primary" id="selectAllJo" style="position: absolute;">Seleccionar todo</button>
+
+              <div class="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="detailsJobs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
+                  Detalles
+                </button>
+                <div class="dropdown-menu" aria-labelledby="detailsJobs">
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-job-printer" value="co-1" checked="checked"> 
+                    <label for="toggle-co-job-printer">Impresora</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-job-prid" value="co-1" checked="checked"> 
+                    <label for="toggle-co-job-prid">ID Impresora</label>
+                  </li>
+                  <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-job-file" value="co-1" checked="checked"> 
+                    <label for="toggle-co-job-file">Archivo</label>
+                  </li>
+                </div>
+              </div>
+
+              <div class="container appTableContainer" id="jobsContainer">
                 <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="jobsTable">
                   <table class="table table-bordered mb-0 table-hover" id ="tableJobs">    
                   </table>
                 </div>
               </div>
-              
-              <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#detailsJobs">Detalles</button>
           </div>
-      </div>
       </div>
     </div>
     
@@ -268,8 +320,6 @@
         </div>
       </div>
     </div>
-
-
     <!--Crear Grupo-->
     <div class="modal fade" tabindex="-1" id="addGrupo" style="display: hidden;">
       <div class="modal-dialog">
@@ -286,10 +336,22 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">Nombre Grupo</span>
                   </div>
-                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  <input id="aliasAdGr" value="" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                 </div>
           </div>
+          <!-- Impresoras -->
+          <div class="modal-body">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Impresoras</span>
+              </div>
+            
+              <select id="addPrintersGr" style="width: 100%;" multiple>
+              </select>
+            </div>
+        </div>
           <!-- Seleciona impresoras -->
+          <!--
           <div class="modal-body">
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -302,9 +364,10 @@
               </div>
             </div>
           </div>
+          -->
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarAdGr">Guardar cambios</button>
           </div>
         </div>
       </div>
@@ -314,20 +377,72 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Edita grupo <b id="nombreEdG"> </b></h5>
+              <h5 class="modal-title">Editando <b id="nombreEdG"> </b></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <!-- Grupo -->
+            <!-- Nombre -->
             <div class="modal-body">
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text">Grupo</span>
+                      <span class="input-group-text">Nombre</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                   </div>
             </div>
+            
+            <!-- Impresoras -->
+            <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Impresoras</span>
+                </div>
+              
+                <select id="editPrintersGr" style="width: 100%;" multiple>
+                </select>
+              </div>
+            </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarEdGr">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Editar Contenidos Grupo-->
+    <div class="modal fade" tabindex="-1" id="editGrupoCont" style="display: hidden;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editando <b id="nombreEdGCont"> </b></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- Alias -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Alias</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+            </div>
+            <!-- Grupo -->
+            <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Grupo</span>
+                  </div>
+                
+                  <select id="editGroupsGrCont" style="width: 100%;" multiple>
+                  </select>
+                  
+                  <button class="btn btn-danger" style="margin-top: 3px;" id="editCleanGroupsGrCont">Limpiar todos los grupos</button>
+                </div>
+          </div>
             <!-- Modelo -->
             <div class="modal-body">
                 <div class="input-group input-group-sm mb-3">
@@ -339,12 +454,19 @@
             </div>
             <!-- Estado -->
             <div class="modal-body">
-            <div class="input-group input-group-sm mb-3">
+              <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Estado</span>
                 </div>
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                </div>
+                  
+                <select id="editStateGrCont" class="dropdown-edit">
+                  <option value="&lt;múltiples valores&gt;" hidden>&lt;múltiples valores&gt;</option>
+                  <option value="printing">Printing</option>
+                  <option value="paused">Paused</option>
+                  <option value="no_paper">No Paper</option>
+                  <option value="no_ink">No Ink</option>
+                </select>
+              </div>
             </div>
             <!-- Localizacion -->
             <div class="modal-body">
@@ -355,9 +477,18 @@
                 <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                 </div>
             </div>
+            <!-- IP -->
+            <div class="modal-body">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">IP</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                    </div>
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarEdGrCont">Guardar cambios</button>
             </div>
           </div>
         </div>
@@ -471,19 +602,19 @@
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
-              <h5 class="modal-title">Borrando grupo <b id="nombreElG"></b> </h5>
+              <h5 class="modal-title">Borrando <b id="nombreElG"></b> </h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
 
             <div class="modal-body">
-            ¿Quiere borrar el grupo?
+            ¿Quiere borrar <a id="nombreEl2G"></a>?
             </div>
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarElGr">Si</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmarElGr">Si</button>
             </div>
           </div>
         </div>
@@ -533,14 +664,14 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">Archivo</span>
                   </div>
-                  <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                  <input type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="filePrGr">
                   <button type="button" class="btn btn-primary" >Examinar</button>
               </div>              
           </div>
           
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarPrGr" disabled>Guardar cambios</button>
           </div>
         </div>
       </div>
@@ -588,14 +719,14 @@
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
-              <h5 class="modal-title">Cancelar</h5>
+              <h5 class="modal-title">Cancelar <b id="nombreCa"></b></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
 
             <div class="modal-body justify-content-center">
-              ¿Quiere cancelar los trabajos de <b id="nombreCa"></b>?
+              ¿Quiere cancelar los trabajos de <b id="nombreCa2"></b>?
             </div>
             
             <div class="modal-footer justify-content-center">
@@ -610,19 +741,19 @@
         <div class="modal-dialog">
           <div class="modal-content justify-content-center">
             <div class="modal-header">
-              <h5 class="modal-title">Cancelar</h5>
+              <h5 class="modal-title">Cancelar <b id="nombreCaG"></b></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
 
             <div class="modal-body justify-content-center">
-              ¿Quiere cancelar las impresiones del grupo <b id="nombreCaG"> </b>?
+              ¿Quiere cancelar las impresiones de <b id="nombreCa2G"></b>?
             </div>
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Si</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmarCaGr">Si</button>
             </div>
           </div>
         </div>
@@ -644,7 +775,7 @@
             
             <div class="modal-footer justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmarCaJo">Si</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmarCaJo">Si</button>
             </div>
           </div>
         </div>
@@ -661,7 +792,8 @@
     <script src="js/pmgr.js" type="module"></script>
 
     <!-- multiple selector plugin que va mejor -->
-<script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+    <!-- https://github.com/wenzhixin/multiple-select -->
+    <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
     
 </body>
 

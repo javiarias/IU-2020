@@ -35,13 +35,14 @@ button:active {
 
 .appTableContainer {
     text-align: center;    
+    justify-content: center;
+    width : 100%;
 }
 
 .appTableContainer .appTable {
-    float:left;
     margin:0;
     height: 493px;
-    width: 1000px;
+    width: auto;
     margin-bottom: 40px;
     text-align: center;
 }

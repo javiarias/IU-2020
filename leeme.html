@@ -15,38 +15,102 @@
 </head>
 
 <body>
-    <br>
-    <br>
-    <ul>
-    <li>✌️ Modificaciones hechas
-    
-      <ul> 
-        <li> Modificacion de las pestañas para un aspecto mas similar al del prototipo en mocqups. </li>
+  <div class="accordion" id="accordionExample" style="
+    margin-top: 10px;
+    width: auto;
+    height: auto;
+">
 
-        <li> Tablas sincronizadas con datos locales (generados) que nos permiten la seleccion solie un/os elemento/s
-        (indicado/s con un color azul) y realizar cambios solie ellos con los distintos botones superiores.</li>
-        
-        <li> Los botones que actuan solie una impresora seleccionada aparecen por defecto desactivados hasta que se seleccione
-        una de las impresoras de la tabla.</li>
-        
-        <li> Se pueden modificar, eliminar y crear impresoras, y se reflejan los cambios en toda la aplicación.</li>
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+              aria-expanded="true" aria-controls="collapseOne">
+              <h2><b>✌️ Modificaciones hechas</b></h2>
+            </button>
+          </h2>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <ul> 
+              <li> Adición del paquete externo "multiple-select" del gran y benevolente "文翼 (wenzhixin)" (<a href="https://github.com/wenzhixin/multiple-select">https://github.com/wenzhixin/multiple-select</a>), dado que hacer listas de múltiple selección con checkboxes a mano en html/js rozaba los límites de nuestra paciencia (y queda mil veces mejor). </li>
       
-        <li> En el boton de modificar podemos editar diversos parametros de las impresoras, y se actualizan los grupos correctamente.</li>
-      </ul>
-    </li>
-    <br>
-    <br>
-    <li>😞 Cosas a medias
-      <ul>    
-        <li>No hay sincronización con el servidor (asumimos que es la próxima tarea)</li>
-        <li>Busqueda y filtrado reflejado en la tabla.</li>
-      </ul>
-    </li>
-  </ul>
+          <br>
+              <li> Modificación de las pestañas para un aspecto mas similar al del prototipo en mocqups. </li>
+      
+          <br>
+              <li> Tablas sincronizadas con datos locales (generados) que nos permiten la selección sobre un/os elemento/s
+              (indicado/s con un color azul) y realizar cambios sobre ellos con los distintos botones superiores.</li>
+              
+          <br>
+              <li> Los botones que actuan sobre una impresora seleccionada aparecen por defecto desactivados hasta que se seleccione
+              una de las impresoras de la tabla.</li>
+              
+          <br>
+              <li> Se pueden modificar, eliminar y crear impresoras, y se reflejan los cambios en toda la aplicación. Esto se aplica también a la multiselección. </li>
+              
+          <br>
+              <li> También se pueden añadir trabajos a las impresoras, o cancelar los de las mismas. Si eliges imprimir con más de una impresora seleccionada, tomará la que tenga menos trabajos.</li>
+            
+          <br>
+              <li> En el botón de modificar podemos editar diversos parametros de las impresoras, y se actualizan los grupos correctamente.</li>
+      
+          <br>
+              <li> La pestaña "Grupos" ahora cuenta con dos botones de editar: uno que modifica el grupo (nombre e impresoras contenidas), y otro que modifica todas las impresoras en su interior. </li>
+      
+          <br>
+              <li> Todas las funcionalidades básicas de las pestañas Grupo y Trabajos funcionan también. </li>
+      
+          <br>
+              <li> Añadido botón de "Seleccionar/deseleccionar todo" en cada tabla. </li>
+      
+          <br>
+              <li> Modificados los contenidos de las tablas para que reflejen información importante (trabajos en las impresoras, impresora en los trabajos). </li>
+      
+          <br>
+              <li> Empleados objetos "badge" para mostrar diversos datos de las tablas (inspirados por los otros grupos). </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <h2 class="mb-0">
+            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+              aria-expanded="false" aria-controls="collapseTwo">
+              <h2><b>😞 Cosas que faltan</b></h2>
+            </button>
+          </h2>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+          <div class="card-body">
+            <ul>    
+              <li>No hay sincronización con el servidor.</li>
+          <br>
+              <li>Busqueda y filtrado reflejado en la tabla.</li>
+          <br>
+              <li>Funcionalidad de "Detalles".</li>
+          <br>
+              <li>Descansar.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
   
+    <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+    <!-- JavaScript -->
+    <!-- jQuery primero, Bootstrap después -->
+
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/bootstrap.bundle.js"></script>
 </body>
 
 </html>
