@@ -30,8 +30,8 @@ let MAX_SHOW_JOBS = 4;
 let ID_ = 0;
 
 let filterAlias = "", filterGrupo = "", filterModelo = "", filterTrabajo = "", filterLocalizacion = "", filterEstado = "", filterIP = "";
-
-function update()
+/*
+function update1()
 {
   generar_tabla();
   generar_tabla_grupos();
@@ -91,7 +91,7 @@ function generar_select_grupos()
   $("#editGroupsGrCont").multipleSelect('refresh');
 }
 
-function createPrinterItem(printer) {
+*/function createPrinterItem(printer) {
 
   if(printer.status == Pmgr.PrinterStates.PAUSED && printer.queue.length > 0)
     printer.status = Pmgr.PrinterStates.PRINTING;
@@ -176,7 +176,7 @@ function createPrinterItem(printer) {
 
   return myTable;
 }
-
+/*
 function selectAllToggle(e, t, selectedArray)
 {
 
@@ -212,7 +212,7 @@ function selectAllToggle(e, t, selectedArray)
 
 //cuando se pulsa myBtn se llama a myFunction
 //document.getElementById("myBtn").onclick = function() {myFunction()};
-
+*/
 
 
 //--------------------------------GENERA TABLA PRINTERS------------------------------------------
@@ -287,7 +287,7 @@ $("#selectAllPr").click(function()
 
   selectAllToggle(this, t, selected);
 });
-
+/*
 $("#confirmarCaPr").click(function()
 {
   
@@ -311,7 +311,7 @@ $("#confirmarCaPr").click(function()
     pr.queue = [];
   }
 
-  update();
+  update1();
 });
 
 document.getElementById('editStatePr').onchange = editStatePr;
@@ -394,10 +394,11 @@ $("#editPrinterButton").click(function()
   
 });
 
+*/
 $("#addPrinterButton").click(function()
 {
-  document.getElementById('confirmarAdPr').disabled = true;
-
+  document.getElementById('confirmarAdPr').disabled = false;
+  
   document.getElementById('aliasAdPr').value = "";
 });
 
@@ -420,25 +421,9 @@ $("#confirmarAdPr").click(function(e)
     Pmgr.PrinterStates.PAUSED
   );  
 
-  Pmgr.globalState.printers.push(pr);  
-  
-  let groupSel = $("#addGroupsPr").multipleSelect('getSelects');
-  
-  let idG = Pmgr.globalState.groups;
-  
-  for(let j = 0; j < groupSel.length; j++)
-  {
-    pr.group = groupSel[j];
-    
-    idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
-  }
-        
-  $("#addGroupsPr").multipleSelect('setSelects', []);
-
-  update();
-  ID_++;
+  Pmgr.addPrinter(pr);
 });
-
+/*
 $("#print").click(function()
 {
     document.getElementById('confirmarPrPr').disabled = true;
@@ -484,7 +469,7 @@ $("#confirmarPrPr").click(function(e)
 
     document.getElementById('filePrPr').value = "";
 
-    update();
+    update1();
     ID_++;
   }
 });
@@ -551,7 +536,7 @@ $("#confirmarEdPr").click(function()
 
   setCleanGroups();
 
-  update();
+  update1();
 });
 
 $("#confirmarElPr").click(function()
@@ -576,9 +561,9 @@ $("#confirmarElPr").click(function()
     }
   }
 
-  update();
+  update1();
 });
-
+*/
 function generar_tabla(){
 
   let myTable= "<table class=table table-bordered mb-0 table-hover display>";
@@ -665,7 +650,7 @@ function highlightGroup(e)
     document.getElementById('nombreImG').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
-
+/*
 document.getElementById('editStatePr').onchange = editStatePr;
 
 let editGroupsDisabledGr = false;
@@ -802,7 +787,7 @@ $("#confirmarEdGrCont").click(function()
 
   setCleanGroupsGr();
 
-  update();
+  update1();
 });
 
 $("#editGroupButton").click(function()
@@ -878,7 +863,7 @@ $("#confirmarEdGr").click(function()
     }
   }
 
-  update();
+  update1();
 });
 
 $("#selectAllGr").click(function()
@@ -925,7 +910,7 @@ $("#confirmarCaGr").click(function()
     });
   }
 
-  update();
+  update1();
 });
 
 $("#addGroupButton").click(function()
@@ -967,7 +952,7 @@ $("#confirmarAdGr").click(function(e)
   $("#addPrintersGr").multipleSelect('setSelects', []);
 
   ID_++;
-  update();
+  update1();
 });
 
 $("#printG").click(function()
@@ -1018,7 +1003,7 @@ $("#confirmarPrGr").click(function(e)
 
     document.getElementById('filePrGr').value = "";
 
-    update();
+    update1();
     ID_++;
   }
 });
@@ -1039,7 +1024,7 @@ $("#confirmarElGr").click(function()
 
   update();
 });
-
+*/
 function generar_tabla_grupos(){
 
  let myTable= "<table class=table table-bordered mb-0 table-hover display>";
@@ -1127,7 +1112,7 @@ function highlightJobs(e)
     document.getElementById('nombreCaJ').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
-
+/*
 $("#selectAllJo").click(function()
 {
   let selectAll = (this.innerText != "Deseleccionar todo");
@@ -1168,7 +1153,7 @@ $("#confirmarCaJo").click(function()
     }
   }
 
-  update();
+  update1();
 
   //Pmgr.rmJob(arrayAux[0]);
   //generar_tabla_jobs();
@@ -1201,7 +1186,7 @@ function generar_tabla_jobs()
     myTable+="</tbody></table>";
     document.getElementById('tableJobs').innerHTML = myTable;
 }
-
+*/
 
 //--------------------------------OTRAS COSAS--------------------------------------------
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
@@ -1301,15 +1286,7 @@ $(document).ready(function(){
 
   Pmgr.login("g1", "poggers").then(d => {
       if (d !== undefined) {
-          update();
-
-          let minPrinters= 5
-          let maxPrinters = 12;
-          let minGroups = 1;
-          let maxGroups = 5 
-          let jobCount = 22;
-          
-          
+          update();         
       } else {
           console.log("error de login");
       }
