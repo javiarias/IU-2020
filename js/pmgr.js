@@ -1276,47 +1276,46 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
 // Código de pegamento, ejecutado sólo una vez que la interfaz esté cargada.
 // Generalmente de la forma $("selector").cosaQueSucede(...)
 //
-$(document).ready(function() { 
-  
-  // funcion de actualización de ejemplo. Llámala para refrescar interfaz
-  function update_(result) {
-    try {
-      // vaciamos un contenedor
-      $("#accordionExample").empty();
-      // y lo volvemos a rellenar con su nuevo contenido
-      Pmgr.globalState.printers.forEach(m =>  $("#accordionExample").append(createPrinterItem(m)));
-      // y asi para cada cosa que pueda haber cambiado
-    } catch (e) {
-      console.log('Error actualizando', e);
-    }
+function update(result) {
+  try {
+    // vaciamos un contenedor
+    $("#accordionExample").empty();
+    // y lo volvemos a rellenar con su nuevo contenido
+    Pmgr.globalState.printers.forEach(m =>  $("#accordionExample").append(createPrinterItem(m)));
+    generar_tabla(); 
+    generar_tabla_grupos(); 
+    generar_tabla_jobs(); 
+  } catch (e) {
+    console.log('Error actualizando', e);
   }
+}
 
+$(document).ready(function(){
+
+  // funcion de actualización de ejemplo. Llámala para refrescar interfaz
+  
 
   // Servidor a utilizar. También puedes lanzar tú el tuyo en local (instrucciones en Github)
-  const serverUrl = "http://localhost:8080/api/";
+  const serverUrl = "http://gin.fdi.ucm.es:3128/api/";
   Pmgr.connect(serverUrl);
 
-  // ejemplo de login
-  Pmgr.login("HDY0IQ", "cMbwKQ").then(d => {
-    if (d !== undefined) {
-        const u = Gb.resolve("HDY0IQ");
-        console.log("login ok!", u);
-    } else {
-        console.log(`error en login (revisa la URL: ${serverUrl}, y verifica que está vivo)`);
-        console.log("Generando datos de ejemplo para uso en local...")
+  Pmgr.login("g1", "poggers").then(d => {
+      if (d !== undefined) {
+          update();
 
-        let minPrinters = 5; 
-        let maxPrinters = 15; 
-        let minGroups = 3;
-        let maxGroups = 8; 
-        let jobCount = 12;
-
-        populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount);
-        update();
-    }
+          let minPrinters= 5
+          let maxPrinters = 12;
+          let minGroups = 1;
+          let maxGroups = 5 
+          let jobCount = 22;
+          
+          
+      } else {
+          console.log("error de login");
+      }
   });
 }); 
-
+  
 
 /*$(document).ready(function(){
   let minPrinters= 5
@@ -1326,13 +1325,20 @@ $(document).ready(function() {
   let jobCount = 22;
   
   populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount);
-  generar_tabla();
-  generar_tabla_grupos();
-  generar_tabla_jobs();
-});*/
+  generar_tabla(); 
+  generar_tabla_grupos(); 
+  generar_tabla_jobs(); 
+});*/ 
 // cosas que exponemos para usarlas desde la consola
-window.populate = populate
+
+window.populate = populate;
 window.Pmgr = Pmgr;
-window.createPrinterItem = createPrinterItem
+window.createPrinterItem = createPrinterItem;
+
+
+
+
+
+
 
 
