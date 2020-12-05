@@ -301,7 +301,7 @@ function updateState(data) {
 let globalState = new GlobalState();   
 
 // la direccion del servidor
-let serverApiUrl = "//localhost:8080/api/";
+let serverApiUrl = "http://gin.fdi.ucm.es:3128/api/";
 
 // el token actual (procedente del ultimo login)
 let serverToken = "no-has-hecho-login";
