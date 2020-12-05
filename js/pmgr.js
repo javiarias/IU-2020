@@ -1,6 +1,6 @@
 "use strict"
 
-import * as Pmgr from './pmgrapi.js'
+import * as Pmgrapi from './pmgrapi.js'
 
 
 /**
@@ -93,10 +93,10 @@ function generar_select_grupos()
 
 */function createPrinterItem(printer) {
 
-  if(printer.status == Pmgr.PrinterStates.PAUSED && printer.queue.length > 0)
-    printer.status = Pmgr.PrinterStates.PRINTING;
-  else if(printer.status == Pmgr.PrinterStates.PRINTING && printer.queue.length == 0)
-    printer.status = Pmgr.PrinterStates.PAUSED;
+  if(printer.status == Pmgrapi.PrinterStates.PAUSED && printer.queue.length > 0)
+    printer.status = Pmgrapi.PrinterStates.PRINTING;
+  else if(printer.status == Pmgrapi.PrinterStates.PRINTING && printer.queue.length == 0)
+    printer.status = Pmgrapi.PrinterStates.PAUSED;
 
 
   const rid = 'x_' + Math.floor(Math.random()*1000000);
@@ -104,7 +104,7 @@ function generar_select_grupos()
   const cid = 'c_'+rid;
 
   // usar [] en las claves las evalua (ver https://stackoverflow.com/a/19837961/15472)
-  const PS = Pmgr.PrinterStates;
+  const PS = Pmgrapi.PrinterStates;
   let pillClass = { [PS.PAUSED] : "badge-secondary",
                     [PS.PRINTING] : "badge-success",
                     [PS.NO_INK] : "badge-danger",
@@ -125,15 +125,15 @@ function generar_select_grupos()
 
   let i = 0;
 
-  for (let j = 0; j < Pmgr.globalState.groups.length; j++)
+  for (let j = 0; j < Pmgrapi.globalState.groups.length; j++)
   {
-    let idG = Pmgr.globalState.groups[j].printers.findIndex(element => printer.id == element);
+    let idG = Pmgrapi.globalState.groups[j].printers.findIndex(element => printer.id == element);
     if(idG >= 0)
     {
       if(i < MAX_SHOW_PRINTERS)
       {
         myTable += `<span class="badge badge-pill badge-secondary">`;
-        myTable += Pmgr.globalState.groups[j].name;
+        myTable += Pmgrapi.globalState.groups[j].name;
         myTable += `</span> `;
       }
       i++;
@@ -154,12 +154,12 @@ function generar_select_grupos()
 
   for (i = 0; i < printer.queue.length && i < MAX_SHOW_JOBS; i++)
   {
-    let idG = Pmgr.globalState.jobs.findIndex(element => element.id == printer.queue[i]);
+    let idG = Pmgrapi.globalState.jobs.findIndex(element => element.id == printer.queue[i]);
 
     if(idG >= 0)
     {
       myTable += `<span class="badge badge-pill badge-secondary">`;
-      myTable += Pmgr.globalState.jobs[idG].fileName;
+      myTable += Pmgrapi.globalState.jobs[idG].fileName;
       myTable += `</span> `;
     }    
   }
@@ -287,6 +287,7 @@ $("#selectAllPr").click(function()
 
   selectAllToggle(this, t, selected);
 });
+
 /*
 $("#confirmarCaPr").click(function()
 {
@@ -411,17 +412,19 @@ $("#confirmarAdPr").click(function(e)
 {
   let alias = document.getElementById('aliasAdPr').value;
 
-  let pr = new Pmgr.Printer(
+  let pr = new Pmgrapi.Printer(
     ID_,
     alias,
-    "",
-    "",
-    "",
+    "-",
+    "-",
+    "-",
     [],
-    Pmgr.PrinterStates.PAUSED
+    Pmgrapi.PrinterStates.PAUSED
   );  
+  ID_++;
 
-  Pmgr.addPrinter(pr);
+  //Pmgrapi.addPrinter(pr);
+  Pmgrapi.addPrinter(pr).then(update());
 });
 /*
 $("#print").click(function()
@@ -579,8 +582,8 @@ function generar_tabla(){
   myTable+= "<th headers=co-pr-jobs>Trabajos</th></tr></thead>";
   myTable+= "<tbody>";
 
-  for (let i = 0; i < Pmgr.globalState.printers.length ; i++) {
-    myTable += createPrinterItem(Pmgr.globalState.printers[i])
+  for (let i = 0; i < Pmgrapi.globalState.printers.length ; i++) {
+    myTable += createPrinterItem(Pmgrapi.globalState.printers[i])
   }
    
    myTable+="</tbody></table>";
@@ -1035,22 +1038,22 @@ function generar_tabla_grupos(){
  myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
  myTable+= "<tbody>";
 
- for (let i = 0; i < Pmgr.globalState.groups.length ; i++) {
-      myTable+="<tr><td>" +Pmgr.globalState.groups[i].id + "</td>";  
-      myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
+ for (let i = 0; i < Pmgrapi.globalState.groups.length ; i++) {
+      myTable+="<tr><td>" +Pmgrapi.globalState.groups[i].id + "</td>";  
+      myTable+="<td>" + Pmgrapi.globalState.groups[i].name + "</td>";
       myTable+="<td>";
 
-      for(let p = 0; p < Pmgr.globalState.groups[i].printers.length && p < MAX_SHOW_GROUPS; ++p ){
-        let aux = Pmgr.globalState.groups[i].printers[p];
-        let print = Pmgr.globalState.printers.find(element => element.id == aux);
+      for(let p = 0; p < Pmgrapi.globalState.groups[i].printers.length && p < MAX_SHOW_GROUPS; ++p ){
+        let aux = Pmgrapi.globalState.groups[i].printers[p];
+        let print = Pmgrapi.globalState.printers.find(element => element.id == aux);
         myTable +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
         //myTable += "--";
       }
       
-      if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
+      if(Pmgrapi.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
       {
         myTable += `<span class="badge badge-pill badge-secondary">+`;
-        myTable += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
+        myTable += Pmgrapi.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
         myTable += `</span> `;
       }
 
@@ -1159,6 +1162,7 @@ $("#confirmarCaJo").click(function()
   //generar_tabla_jobs();
 });
 
+*/
 function generar_tabla_jobs()
 {
   let myTable= "<table class=table table-bordered mb-0 table-hover display>";
@@ -1171,28 +1175,27 @@ function generar_tabla_jobs()
   myTable+= "<th headers=co-job-file>Archivo</th></tr></thead>";
   myTable+= "<tbody>";
 
-  for (let i = 0; i < Pmgr.globalState.jobs.length ; i++) {
+  for (let i = 0; i < Pmgrapi.globalState.jobs.length ; i++) {
     
-    let pr = Pmgr.globalState.printers.find(p => p.id == Pmgr.globalState.jobs[i].printer);
+    let pr = Pmgrapi.globalState.printers.find(p => p.id == Pmgrapi.globalState.jobs[i].printer);
 
-    myTable+="<tr><td>" + Pmgr.globalState.jobs[i].id + "</td>";
+    myTable+="<tr><td>" + Pmgrapi.globalState.jobs[i].id + "</td>";
     myTable+="<td>" + pr.alias + "</td>";
-    myTable+="<td>" + Pmgr.globalState.jobs[i].printer + "</td>";
-    //myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
-    myTable+="<td>" + Pmgr.globalState.jobs[i].fileName + "</td>";
+    myTable+="<td>" + Pmgrapi.globalState.jobs[i].printer + "</td>";
+    //myTable+="<td>" + Pmgrapi.globalState.jobs[i].owner + "</td>";
+    myTable+="<td>" + Pmgrapi.globalState.jobs[i].fileName + "</td>";
     myTable+="</tr>";
   }
     
     myTable+="</tbody></table>";
     document.getElementById('tableJobs').innerHTML = myTable;
 }
-*/
 
 //--------------------------------OTRAS COSAS--------------------------------------------
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
 // se puede no-usar, o modificar libremente
 async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount) {
-      const U = Pmgr.Util;
+      const U = Pmgrapi.Util;
 
       // genera datos de ejemplo
       minPrinters = 5;
@@ -1217,7 +1220,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
       let jobs = [];
       for (let i=0; i<jobCount; i++) {
           let p = U.randomChoice(printers);
-          let j = new Pmgr.Job(ID_++,
+          let j = new Pmgrapi.Job(ID_++,
             p.id,
             [
                 U.randomChoice([
@@ -1232,7 +1235,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
           jobs.push(j);
       }
 
-      if (Pmgr.globalState.token) {
+      if (Pmgrapi.globalState.token) {
           console.log("Updating server with all-new data");
 
           // FIXME: remove old data
@@ -1248,7 +1251,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
           }
       } else {
           console.log("Local update - not connected to server");
-          Pmgr.updateState({
+          Pmgrapi.updateState({
             jobs: jobs,
             printers: printers,
             groups: groups
@@ -1266,7 +1269,7 @@ function update(result) {
     // vaciamos un contenedor
     $("#accordionExample").empty();
     // y lo volvemos a rellenar con su nuevo contenido
-    Pmgr.globalState.printers.forEach(m =>  $("#accordionExample").append(createPrinterItem(m)));
+    Pmgrapi.globalState.printers.forEach(m =>  $("#accordionExample").append(createPrinterItem(m)));
     generar_tabla(); 
     generar_tabla_grupos(); 
     generar_tabla_jobs(); 
@@ -1282,9 +1285,9 @@ $(document).ready(function(){
 
   // Servidor a utilizar. También puedes lanzar tú el tuyo en local (instrucciones en Github)
   const serverUrl = "http://gin.fdi.ucm.es:3128/api/";
-  Pmgr.connect(serverUrl);
+  Pmgrapi.connect(serverUrl);
 
-  Pmgr.login("g1", "poggers").then(d => {
+  Pmgrapi.login("g1", "poggers").then(d => {
       if (d !== undefined) {
           update();         
       } else {
