@@ -297,11 +297,84 @@ function updateState(data) {
     return data;
 }
 
+// funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
+// se puede no-usar, o modificar libremente
+async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount) {
+      const U = Util;
+
+      // genera datos de ejemplo
+      minPrinters = minPrinters || 10;
+      maxPrinters = maxPrinters || 20;
+      minGroups = minGroups || 1;
+      maxGroups = maxGroups || 3;
+      jobCount = jobCount || 100;
+      let lastId = 0;
+
+      let printers = U.fill(U.randomInRange(minPrinters, maxPrinters),
+          () => U.randomPrinter(lastId ++));
+
+      let groups = U.fill(U.randomInRange(minPrinters, maxPrinters),
+          () => U.randomGroup(lastId ++, printers, 50));
+
+      let jobs = [];
+      for (let i=0; i<jobCount; i++) {
+          let p = U.randomChoice(printers);
+          let j = new Pmgr.Job(lastId++,
+            p.id,
+            [
+                U.randomChoice([
+                    "Alice", "Bob", "Carol", "Daryl", "Eduardo", "Facundo", "Gloria", "Humberto"]),
+                U.randomChoice([
+                    "Fernández", "García", "Pérez", "Giménez", "Hervás", "Haya", "McEnroe"]),
+                U.randomChoice([
+                    "López", "Gutiérrez", "Pérez", "del Oso", "Anzúa", "Báñez", "Harris"]),
+            ].join(" "),
+            U.randomString() + ".pdf");
+          p.queue.push(j.id);
+          jobs.push(j);
+      }
+
+      if (globalState.token) {
+          console.log("Updating server with all-new data");
+          const idMap = {}; // mapa de ids generadas a reales
+          const filter = (forbidden, raw) => Object.keys(raw)
+            .filter(key => !forbidden.includes(key))
+            .reduce((obj, key) => {
+                obj[key] = raw[key];
+                return obj;
+            }, {});
+
+          // add all printers, without queues
+          for (let p of printers) {
+            await addPrinter(filter(["queue", "id"], p));
+            idMap[p.id] = globalState.printers.filter(x => x.alias == p.alias)[0].id;
+          }
+          console.log(printers, globalState.printers, idMap)
+          // add all groups, with printers
+          for (let g of groups) {
+            g.printers = g.printers.map(id => idMap[id]); // pero usa IDs asignados por servidor
+            await addGroup(g);
+          }
+          // add all jobs, with printers
+          for (let j of jobs) {
+            j.printer = idMap[j.printer];    // pero usa IDs asignados por servidor
+            await addJob(j);
+          }
+      } else {
+          console.log("Local update - not connected to server");
+          updateState({
+            jobs: jobs,
+            printers: printers,
+            groups: groups
+          });
+      }
+}
+
 // el estado global
 let globalState = new GlobalState();   
 
 // la direccion del servidor
-let serverApiUrl = "http://gin.fdi.ucm.es:3128/api/";
+let serverApiUrl = "//localhost:8080/api/";
 
 // el token actual (procedente del ultimo login)
 let serverToken = "no-has-hecho-login";
@@ -441,7 +514,7 @@ export {
   list,
 
   // Utilidades varias que no forman parte de la API
-  Util,
+  Util, populate,
 
   // operaciones de administración (para configurar el servidor)
   addUser, rmUser, setUser, ulist

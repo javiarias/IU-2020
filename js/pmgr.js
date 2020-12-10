@@ -27,7 +27,6 @@ import * as Pmgr from './Pmgrapi.js'
 let MAX_SHOW_GROUPS = 10;
 let MAX_SHOW_PRINTERS = 8;
 let MAX_SHOW_JOBS = 4;
-let ID_ = 0;
 
 let filterAlias = "", filterGrupo = "", filterModelo = "", filterTrabajo = "", filterLocalizacion = "", filterEstado = "", filterIP = "";
 
@@ -266,26 +265,20 @@ $("#selectAllPr").click(function()
 
 $("#confirmarCaPr").click(function()
 {
-  
   for(let i = 0; i < selected.length; i++)
   {
     let text = selected[i].innerText;
     let arrayAux= text.split("\t");
     let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
     
-    if(pr.status == Pmgr.PrinterStates.PRINTING)
-    pr.status = Pmgr.PrinterStates.PAUSED;
+    let id = Pmgr.globalState.jobs.filter(j => j.printer == pr.id);
     
-    let id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
-    while (id >= 0)
-    {
-      Pmgr.globalState.jobs.splice(id, 1);
-      
-      id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
-    }
-    
-    pr.queue = [];
+    id.forEach(element => {      
+      Pmgr.rmJob(element.id).then(update);
+    });
   }
+
+  update();
 });
 
 document.getElementById('editStatePr').onchange = editStatePr;
@@ -387,20 +380,22 @@ $("#confirmarAdPr").click(function(e)
   let group;// = document.getElementById('addGroupsPr').value;
   let ip = "192.168.0." + Pmgr.Util.randomInRange(10,250);
 
-  //$("#addGroupsPr").multipleSelect('setSelects', group);
+  let sel = $("#addGroupsPr").multipleSelect('setSelects', group).map(
+      alias => Pmgr.globalState.printers.filter(p => p.alias == alias)[0].id
+      );
 
 
   let pr = new Pmgr.Printer(
-    ID_,
+    0,
     alias,
     "-",
     "-",
     ip,
     [],
     Pmgr.PrinterStates.PAUSED
-  );  
-  ID_++;
-  Pmgr.addPrinter(pr);
+  );
+
+  Pmgr.addPrinter(pr).then(update);
 });
 
 
@@ -434,20 +429,18 @@ $("#confirmarPrPr").click(function(e)
   if(pr != "") 
   {
     let job = new Pmgr.Job(
-      ID_,
+      0,
       pr.id,
-      "",
+      pr.alias,
       file
     );
-    pr.queue.push(job.id);
-    Pmgr.addJob(job).then(update());
-    if(pr.status == Pmgr.PrinterStates.PAUSED)
-      pr.status = Pmgr.PrinterStates.PRINTING;
+    
+    Pmgr.addJob(job).then(update);
 
     document.getElementById('filePrPr').value = "";
-    ID_++;
   }
 });
+
 $("#confirmarEdPr").click(function()
 {  
   
@@ -517,22 +510,12 @@ $("#confirmarElPr").click(function()
   for (let i = 0; i < selected.length; i++)
   { 
     let text = selected[i].innerText;
-    let arrayAux= text.split("\t");
-    //Pmgr.rmPrinter(arrayAux[0]);
+    let arrayAux = text.split("\t");
 
-    let id = Pmgr.globalState.printers.findIndex(element => arrayAux[1] == element.alias);
-
-    if(id >= 0)
-      Pmgr.globalState.printers.splice(id, 1);
-
-    
-    for (let j = 0; j < Pmgr.globalState.groups.length; j++)
-    {
-      let idG = Pmgr.globalState.groups[j].printers.findIndex(element => arrayAux[0] == element);
-      if(idG >= 0)
-        Pmgr.globalState.groups[j].printers.splice(idG, 1);
-    }
+    Pmgr.rmPrinter(parseInt(arrayAux[0])).then(update);
   }
+
+  update();
 });
 
 function generar_tabla(){
@@ -752,7 +735,6 @@ $("#confirmarEdGrCont").click(function()
       });
     }
     
-    
     editGroupsDisabledGr = false;
     
     setCleanGroupsGr();
@@ -806,10 +788,12 @@ $("#confirmarEdGrCont").click(function()
     
     let input = document.getElementById('editGrupo').children[0].children[0].children;
     
-    let groupSel = $("#editPrintersGr").multipleSelect('getSelects');
+    let groupSel = $("#editPrintersGr").multipleSelect('getSelects')
+
     
     let idG = Pmgr.globalState.groups;
     
+
     for (let i = 0; i < selectedGroup.length; i++)
     {
       let text = selectedGroup[i].innerText;
@@ -822,18 +806,17 @@ $("#confirmarEdGrCont").click(function()
       
       if(groupSel.length > 0 || (groupSel.length == 0 && selectedGroups.length == 1))
       
-    {
-      group.printers = [];
-      for(let j = 0; j < groupSel.length; j++)
       {
-        let pr = Pmgr.globalState.printers.find(el => el.alias == groupSel[j]);
-        
-        pr.group = group.name;
-        group.printers.push(pr.id);
+        group.printers = [];
+        for(let j = 0; j < groupSel.length; j++)
+        {
+          let pr = Pmgr.globalState.printers.find(el => el.alias == groupSel[j]);
+          
+          pr.group = group.name;
+          group.printers.push(pr.id);
+        }
       }
-    }
   }
-
 });
 
 $("#selectAllGr").click(function()
@@ -864,18 +847,11 @@ $("#confirmarCaGr").click(function()
 
       if(pr.queue.length > 0)
       {
-        if(pr.status == Pmgr.PrinterStates.PRINTING)
-          pr.status = Pmgr.PrinterStates.PAUSED;
+        let id = Pmgr.globalState.jobs.filter(j => j.printer == pr.id);
     
-        let id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
-        while (id >= 0)
-        {
-          Pmgr.globalState.jobs.splice(id, 1);
-    
-          id = Pmgr.globalState.jobs.findIndex(j => j.printer == pr.id);
-        }
-    
-        pr.queue = [];
+        id.forEach(element => {      
+          Pmgr.rmJob(element.id).then(update);
+        });
       }
     });
   }
@@ -901,33 +877,26 @@ $("#confirmarAdGr").click(function(e)
 { 
 
   let alias = document.getElementById('aliasAdGr').value;
-
-  let ids = []
   
-  let printSel = $("#addPrintersGr").multipleSelect('getSelects');
-  
-  let idP = Pmgr.globalState.printers;
-  
-  for(let j = 0; j < printSel.length; j++)
-  {    
-    ids.push(idP.find(p => p.alias == printSel[j]).id);
-  }
+  //esto es de una librería que añadimos, como comentamos en el leeme.html
+  //que hace las selecciones múltiples mejores
+  let printSel = $("#addPrintersGr").multipleSelect('getSelects').map(
+    alias => Pmgr.globalState.printers.filter(p => p.alias == alias)[0].id
+  )
+  // ahora contiene IDs
 
   let pr = new Pmgr.Group(
-    ID_,
+    0, //no funciona si no le pasas alguna id (aunque te la genera el server)
     alias,
-    ids
+    printSel
   ); 
 
-  //Pmgr.globalState.groups.push(pr);
-  Pmgr.addGroup(pr);
-  //update();
-        
+  // actualiza interfaz cuando acabe el update
+  Pmgr.addGroup(pr).then(update); 
   $("#addPrintersGr").multipleSelect('setSelects', []);
 
-  ID_++;
-
 });
+
 $("#printG").click(function()
 {
     document.getElementById('confirmarPrGr').disabled = true;
@@ -961,7 +930,7 @@ $("#confirmarPrGr").click(function(e)
   if(pr != "") 
   {
     let job = new Pmgr.Job(
-      ID_,
+      0,
       pr.id,
       "",
       file
@@ -974,10 +943,7 @@ $("#confirmarPrGr").click(function(e)
 
     document.getElementById('filePrGr').value = "";
 
-    Pmgr.addJob(job);
-    //update();
- 
-    ID_++;
+    Pmgr.addJob(job).then(update);
   }
 });
 
@@ -987,14 +953,11 @@ $("#confirmarElGr").click(function()
   { 
     let text = selectedGroup[i].innerText;
     let arrayAux= text.split("\t");
-    //Pmgr.rmGroup(arrayAux[0]);
-
-    let id = Pmgr.globalState.groups.findIndex(element => arrayAux[1] == element.name);
-
-    if(id >= 0)
-      Pmgr.globalState.groups.splice(id, 1);
+    
+    Pmgr.rmGroup(parseInt(arrayAux[0])).then(update);
   }
-
+  
+  //sin un último update, al tener multiple selección, puede actualizarse mal la interfaz
   update();
 });
 
@@ -1112,24 +1075,12 @@ $("#confirmarCaJo").click(function()
     
     if (jobID >= 0)
     {
-      Pmgr.globalState.jobs.splice(jobID, 1);
-
-      let pr = Pmgr.globalState.printers.find(el => el.id == job.printer);
-
-      if(pr.status == Pmgr.PrinterStates.PRINTING && pr.queue.length == 0)
-        pr.status = Pmgr.PrinterStates.PAUSED;
-
-      let id = pr.queue.findIndex(j => job.id == j);
-
-      if (id >= 0)
-        pr.queue.splice(id, 1);
+      Pmgr.rmJob(Pmgr.globalState.jobs[jobID].id).then(update);
     }
   }
 
   update();
 
-  //Pmgr.rmJob(arrayAux[0]);
-  //generar_tabla_jobs();
 });
 
 
@@ -1150,7 +1101,7 @@ function generar_tabla_jobs()
     let pr = Pmgr.globalState.printers.find(p => p.id == Pmgr.globalState.jobs[i].printer);
 
     myTable+="<tr><td>" + Pmgr.globalState.jobs[i].id + "</td>";
-    myTable+="<td>" + pr.alias + "</td>";
+    myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
     myTable+="<td>" + Pmgr.globalState.jobs[i].printer + "</td>";
     //myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
     myTable+="<td>" + Pmgr.globalState.jobs[i].fileName + "</td>";
@@ -1173,6 +1124,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
       minGroups = 4;
       maxGroups = 8;
       jobCount = jobCount || 100;
+      let ID_ = 0;
       /*
       minPrinters = minPrinters || 10;
       maxPrinters = maxPrinters || 20;
@@ -1237,7 +1189,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
 function update(result) {
   try {
     // vaciamos un contenedor
-    $("#accordionExample").empty();
+    //$("#accordionExample").empty();
     // y lo volvemos a rellenar con su nuevo contenido
     generar_tabla();
     generar_tabla_grupos();
