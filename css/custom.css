@@ -73,6 +73,23 @@ td {border: 1px #DDD solid; padding: 5px; cursor: pointer;}
 .tableFixHead thead th { position: sticky; top: 0; }
 
 
-table  { border-collapse: collapse; width: 100%; }
-th, td { padding: 8px 16px; }
-th     { background:rgb(112, 163, 202);  color: rgb(255, 255, 255); }
+table  { 
+    font-family: Cinzel, serif;
+    border-collapse: collapse; 
+    width: 100%; 
+    border-radius: 1em;
+    border-collapse: collapse;
+}
+th, td { 
+    padding: 8px 16px; 
+    border-bottom: 2px 
+}
+thead  {
+    background: linear-gradient(-45deg, #54a9b4, #086fcf, #23a6d5);
+    border-radius: 1em;
+}
+th{
+    color: #ffffff;
+}
+
+

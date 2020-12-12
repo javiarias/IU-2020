@@ -27,7 +27,9 @@ import * as Pmgr from './Pmgrapi.js'
 let MAX_SHOW_GROUPS = 10;
 let MAX_SHOW_PRINTERS = 8;
 let MAX_SHOW_JOBS = 4;
-
+let detalleModelo = true; let detalleLocal = true; let detalleIP = true; let detalleGrupo = true; let detalleEstado = true; let detalleTrabajo = true;
+let detalleImpresoras = true; let detalleNombreGrupo = true;
+let detalleJobID = true; let detalleJobImpresora= true; let detalleJobArchivo= true;
 let filterAlias = "", filterGrupo = "", filterModelo = "", filterTrabajo = "", filterLocalizacion = "", filterEstado = "", filterIP = "";
 
 
@@ -98,62 +100,74 @@ function createPrinterItem(printer) {
 
   let myTable = "";
   
-  myTable+="<tr><td>" + printer.id + "</td>";  
-  myTable+="<td>" + printer.alias + "</td>";    
-  myTable+="<td>" + printer.model + "</td>";  
-  myTable+="<td>" + printer.location + "</td>";
-  myTable+="<td>" + printer.ip + "</td>"; 
-  myTable+="<td>";
+  //Esto se muestra siempre
+  myTable+="<tr><td>" + printer.id + "</td>";
+  myTable+="<td>" + printer.alias + "</td>";
 
-  let i = 0;
-
-  for (let j = 0; j < Pmgr.globalState.groups.length; j++)
+  //Aqui se hace la distincion de que se muestra y que no
+  if(detalleModelo) myTable+="<td>" + printer.model + "</td>";  
+  if(detalleLocal) myTable+="<td>" + printer.location + "</td>";
+  if(detalleIP) myTable+="<td>" + printer.ip + "</td>"; 
+  //-------Grupos
+  if(detalleGrupo)
   {
-    let idG = Pmgr.globalState.groups[j].printers.findIndex(element => printer.id == element);
-    if(idG >= 0)
+    myTable+="<td>";
+    let i = 0;
+    for (let j = 0; j < Pmgr.globalState.groups.length; j++)
     {
-      if(i < MAX_SHOW_PRINTERS)
+      let idG = Pmgr.globalState.groups[j].printers.findIndex(element => printer.id == element);
+      if(idG >= 0)
+      {
+        if(i < MAX_SHOW_PRINTERS)
+        {
+          myTable += `<span class="badge badge-pill badge-secondary">`;
+          myTable += Pmgr.globalState.groups[j].name;
+          myTable += `</span> `;
+        }
+        i++;
+      }
+    } 
+    if(i >= MAX_SHOW_PRINTERS)
+    {
+      myTable += `<span class="badge badge-pill badge-secondary">+`;
+      myTable += i - MAX_SHOW_PRINTERS + 1;
+      myTable += `</span> `;
+    }
+  
+    myTable += "</td>";
+  }
+  //-------Estado---------------
+  if(detalleEstado){
+    myTable+="<td>"; 
+    myTable += `<span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>`;
+    myTable += "</td>";  
+  }
+
+  //-------JOBS---------------
+  if(detalleTrabajo){
+    myTable+="<td>";
+  
+    for (let i = 0; i < printer.queue.length && i < MAX_SHOW_JOBS; i++)
+    {
+      let idG = Pmgr.globalState.jobs.findIndex(element => element.id == printer.queue[i]);
+  
+      if(idG >= 0)
       {
         myTable += `<span class="badge badge-pill badge-secondary">`;
-        myTable += Pmgr.globalState.groups[j].name;
+        myTable += Pmgr.globalState.jobs[idG].fileName;
         myTable += `</span> `;
-      }
-      i++;
+      }    
     }
-  } 
-  if(i >= MAX_SHOW_PRINTERS)
-  {
-    myTable += `<span class="badge badge-pill badge-secondary">+`;
-    myTable += i - MAX_SHOW_PRINTERS + 1;
-    myTable += `</span> `;
-  }
-
-  myTable += "</td>";
-  myTable+="<td>"; 
-  myTable += `<span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>`;
-  myTable += "</td>";    
-  myTable+="<td>";
-
-  for (i = 0; i < printer.queue.length && i < MAX_SHOW_JOBS; i++)
-  {
-    let idG = Pmgr.globalState.jobs.findIndex(element => element.id == printer.queue[i]);
-
-    if(idG >= 0)
+  
+    if(printer.queue.length > MAX_SHOW_JOBS)
     {
-      myTable += `<span class="badge badge-pill badge-secondary">`;
-      myTable += Pmgr.globalState.jobs[idG].fileName;
+      myTable += `<span class="badge badge-pill badge-secondary">+`;
+      myTable += printer.queue.length - MAX_SHOW_JOBS;
       myTable += `</span> `;
-    }    
+    }
+  
+    myTable += "</td>";
   }
-
-  if(printer.queue.length > MAX_SHOW_JOBS)
-  {
-    myTable += `<span class="badge badge-pill badge-secondary">+`;
-    myTable += printer.queue.length - MAX_SHOW_JOBS;
-    myTable += `</span> `;
-  }
-
-  myTable += "</td>";
   myTable+="</tr>";
 
   return myTable;
@@ -254,6 +268,56 @@ function highlight(e) {
     document.getElementById('nombreIm').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
+//-------------------------DETALLES----------------------------------------------------------------------------->
+$("#toggle-co-pr-model").click(function(){
+  detalleModelo = !detalleModelo
+  update();
+});
+$("#toggle-co-pr-local").click(function(){
+  detalleLocal = !detalleLocal
+  update();
+});
+$("#toggle-co-pr-ip").click(function(){
+  detalleIP = !detalleIP
+  update();
+});
+$("#toggle-co-pr-groups").click(function(){
+  detalleGrupo = !detalleGrupo
+  update();
+});
+$("#toggle-co-pr-status").click(function(){
+  detalleEstado = !detalleEstado
+  update();
+});
+$("#toggle-co-pr-jobs").click(function(){
+  detalleTrabajo = !detalleTrabajo
+  update();
+});
+
+    //-----Detalles grupos---//
+$("#toggle-co-gr-name").click(function(){
+  detalleNombreGrupo = !detalleNombreGrupo
+  update();
+});
+$("#toggle-co-gr-printers").click(function(){
+  detalleImpresoras = !detalleImpresoras
+  update();
+});
+
+    //-----Detalles jobs---//
+$("#toggle-co-job-printer").click(function(){
+  detalleJobImpresora = !detalleJobImpresora
+  update();
+});
+$("#toggle-co-job-prid").click(function(){
+  detalleJobID = !detalleJobID
+  update();
+});
+$("#toggle-co-job-file").click(function(){
+  detalleJobArchivo = !detalleJobArchivo
+  update();
+});
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////777
 
 $("#selectAllPr").click(function()
 {
@@ -387,9 +451,18 @@ $("#confirmarAdPr").click(function(e)
   let group;// = document.getElementById('addGroupsPr').value;
   let ip = "192.168.0." + Pmgr.Util.randomInRange(10,250);
 
-  let sel = $("#addGroupsPr").multipleSelect('setSelects', group).map(
-      alias => Pmgr.globalState.printers.filter(p => p.alias == alias)[0].id
-      );
+  let sel = $("#addGroupsPr").multipleSelect('getSelects');
+  let selGrs = [];
+  
+  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
+
+  sel.forEach(name => {
+    let aux = Pmgr.globalState.groups.filter(p => p.name == name);
+    aux.forEach(gr => {
+      if(selGrs.length == 0 || selGrs.findIndex(gID => gID == gr.id) < 0)
+        selGrs.push(gr.id)
+    });
+  });
 
 
   let pr = new Pmgr.Printer(
@@ -402,7 +475,20 @@ $("#confirmarAdPr").click(function(e)
     Pmgr.PrinterStates.PAUSED
   );
 
-  Pmgr.addPrinter(pr).then(update);
+  Pmgr.addPrinter(pr).then(value => {
+
+    pr = Pmgr.globalState.printers[Pmgr.globalState.printers.length - 1];
+  
+    selGrs.forEach(grID =>
+    {
+      let gr = Pmgr.globalState.groups.find(g => g.id == grID);
+  
+      gr.printers.push(pr.id);
+  
+      Pmgr.setGroup(gr).then(update);
+    });
+    update();
+  });
 });
 
 
@@ -456,7 +542,7 @@ $("#confirmarEdPr").click(function()
   let input = document.getElementById('editImp').children[0].children[0].children;
   
   let groupSel = $("#editGroupsPr").multipleSelect('getSelects');  
-  
+
   let idG = Pmgr.globalState.groups;
   
   if(editGroupsDisabled || selected.length == 1 || (groupSel.length > 0 && selected.length > 1))
@@ -523,21 +609,24 @@ $("#confirmarElPr").click(function()
   }
 
   update();
-});
+}); 
 
 function generar_tabla(){
 
   let myTable= "<table class=table table-bordered mb-0 table-hover display>";
 
   myTable+= " <thead><tr>";
+
   myTable+= "<th headers=co-pr-id>ID</th>";
   myTable+= "<th headers=co-pr-alias>Alias</th>";
-  myTable+= "<th headers=co-pr-model>Modelo</th>";
-  myTable+= "<th headers=co-pr-local>Localización</th>";
-  myTable+= "<th headers=co-pr-ip>IP</th>";
-  myTable+= "<th headers=co-pr-groups>Grupos</th>";
-  myTable+= "<th headers=co-pr-status>Estado</th>";
-  myTable+= "<th headers=co-pr-jobs>Trabajos</th></tr></thead>";
+
+  if(detalleModelo) myTable+= "<th headers=co-pr-model>Modelo</th>";
+  if(detalleLocal) myTable+= "<th headers=co-pr-local>Localización</th>";
+  if(detalleIP) myTable+= "<th headers=co-pr-ip>IP</th>";
+  if(detalleGrupo)myTable+= "<th headers=co-pr-groups>Grupos</th>";
+  if(detalleEstado)myTable+= "<th headers=co-pr-status>Estado</th>";
+  if(detalleTrabajo)myTable+= "<th headers=co-pr-jobs>Trabajos</th></tr></thead>";
+
   myTable+= "<tbody>";
 
   for (let i = 0; i < Pmgr.globalState.printers.length ; i++) {
@@ -682,19 +771,30 @@ $("#confirmarEdGrCont").click(function()
   let alias = "", model = "", location = "", ip = "", status = "";
   
   let input = document.getElementById('editGrupoCont').children[0].children[0].children;
+
+  let sel = $("#editPrintersGrCont").multipleSelect('getSelects');
+  let groupSel = [];
   
-  let groupSel = $("#editGroupsGrCont").multipleSelect('getSelects');
+  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
+
+  sel.forEach(name => {
+    let aux = Pmgr.globalState.groups.filter(p => p.name == name);
+    aux.forEach(gr => {
+      if(groupSel.length == 0 || groupSel.findIndex(gID => gID == gr.id) < 0)
+        groupSel.push(gr.id)
+    });
+  });
+
+  let idG = Pmgr.globalState.groups;  
   
-  let idG = Pmgr.globalState.groups;
-  
+  let prIDs = [];
+
   for (let i = 0; i < selectedGroup.length; i++)
   {
     
     let text = selectedGroup[i].innerText;
     let arrayAux = text.split("\t");
     let group = idG.find(g => g.id == arrayAux[0]);
-    
-    let prIDs = [];
     
     group.printers.forEach(pID =>
       {
@@ -738,8 +838,12 @@ $("#confirmarEdGrCont").click(function()
               idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
             }
           }
+
+          Pmgr.setPrinter(pr).then(update);
         }
       });
+        
+      Pmgr.setGroup(group).then(update);
     }
     
     editGroupsDisabledGr = false;
@@ -789,20 +893,32 @@ $("#confirmarEdGrCont").click(function()
     
   });
   
+  
   $("#confirmarEdGr").click(function()
   {
     let name = "";
     
     let input = document.getElementById('editGrupo').children[0].children[0].children;
     
-    let groupSel = $("#editPrintersGr").multipleSelect('getSelects')
 
+  let sel = $("#editPrintersGr").multipleSelect('getSelects');
+  let groupSel = [];
+  
+  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
+
+  sel.forEach(alias => {
+    let aux = Pmgr.globalState.printers.filter(p => p.alias == alias);
+    aux.forEach(gr => {
+      if(groupSel.length == 0 || groupSel.findIndex(gID => gID == gr.id) < 0)
+        groupSel.push(gr.id)
+    });
+  });
     
     let idG = Pmgr.globalState.groups;
-    
 
     for (let i = 0; i < selectedGroup.length; i++)
     {
+
       let text = selectedGroup[i].innerText;
       let arrayAux = text.split("\t");
       let group = idG.find(g => g.id == arrayAux[0]);
@@ -811,22 +927,17 @@ $("#confirmarEdGrCont").click(function()
       
       group.name = (name == "" || name == "<múltiples valores>") ? group.name : name;
       
-      if(groupSel.length > 0 || (groupSel.length == 0 && selectedGroups.length == 1))
-      
-      {
-        group.printers = [];
-        for(let j = 0; j < groupSel.length; j++)
-        {
-          let pr = Pmgr.globalState.printers.find(el => el.alias == groupSel[j]);
-          
-          pr.group = group.name;
-          group.printers.push(pr.id);
-        }
-      }
-  }
-});
+      if(groupSel.length > 0 || selectedGroup.length == 1)
+        group.printers = groupSel;
 
-$("#selectAllGr").click(function()
+      Pmgr.setGroup(group).then(update);
+    }
+
+    update();
+  });
+
+
+  $("#selectAllGr").click(function()
 {
   let selectAll = (this.innerText != "Deseleccionar todo");
 
@@ -887,15 +998,24 @@ $("#confirmarAdGr").click(function(e)
   
   //esto es de una librería que añadimos, como comentamos en el leeme.html
   //que hace las selecciones múltiples mejores
-  let printSel = $("#addPrintersGr").multipleSelect('getSelects').map(
-    alias => Pmgr.globalState.printers.filter(p => p.alias == alias)[0].id
-  )
+  let printSel = $("#addPrintersGr").multipleSelect('getSelects');
+  
+  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
+  let sel = [];
+
+  printSel.forEach(name => {
+    let aux = Pmgr.globalState.printers.filter(p => p.alias == name);
+    aux.forEach(pr => {
+      if(sel.length == 0 || sel.findIndex(pID => pID == pr.id) < 0)
+        sel.push(pr.id)
+    });
+  });
   // ahora contiene IDs
 
   let pr = new Pmgr.Group(
     0, //no funciona si no le pasas alguna id (aunque te la genera el server)
     alias,
-    printSel
+    sel
   ); 
 
   // actualiza interfaz cuando acabe el update
@@ -974,31 +1094,32 @@ function generar_tabla_grupos(){
 
  myTable+= " <thead><tr>";
  myTable+= "<th headers=co-gr-id>ID</th>";
- myTable+= "<th headers=co-gr-name>Nombre</th>";
- myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
+ if(detalleNombreGrupo) myTable+= "<th headers=co-gr-name>Nombre</th>";
+ if(detalleImpresoras) myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
  myTable+= "<tbody>";
 
  for (let i = 0; i < Pmgr.globalState.groups.length ; i++) {
       myTable+="<tr><td>" +Pmgr.globalState.groups[i].id + "</td>";  
-      myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
-      myTable+="<td>";
-
-      for(let p = 0; p < Pmgr.globalState.groups[i].printers.length && p < MAX_SHOW_GROUPS; ++p ){
-        let aux = Pmgr.globalState.groups[i].printers[p];
-        let print = Pmgr.globalState.printers.find(element => element.id == aux);
-        myTable +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
-        //myTable += "--";
+      if(detalleNombreGrupo) myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
+      if(detalleImpresoras){
+        myTable+="<td>";
+        
+        for(let p = 0; p < Pmgr.globalState.groups[i].printers.length && p < MAX_SHOW_GROUPS; ++p ){
+          let aux = Pmgr.globalState.groups[i].printers[p];
+          let print = Pmgr.globalState.printers.find(element => element.id == aux);
+          myTable +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
+          //myTable += "--";
+        }
+        
+        if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
+        {
+          myTable += `<span class="badge badge-pill badge-secondary">+`;
+          myTable += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
+          myTable += `</span> `;
+        }
+        myTable+="</td>";
       }
-      
-      if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
-      {
-        myTable += `<span class="badge badge-pill badge-secondary">+`;
-        myTable += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
-        myTable += `</span> `;
-      }
-
-
-      myTable+="</td></tr>";
+      myTable+= "</tr>";
  }
 
    myTable+="</tbody></table>";
@@ -1097,21 +1218,23 @@ function generar_tabla_jobs()
 
   myTable+= " <thead><tr>";
   myTable+= "<th headers=co-job-id>ID</th>";
-  myTable+= "<th headers=co-job-printer>Impresora</th>";
-  myTable+= "<th headers=co-job-prid>ID Impresora</th>";
+  
+  if(detalleJobImpresora) myTable+= "<th headers=co-job-printer>Impresora</th>";
+  if(detalleJobID) myTable+= "<th headers=co-job-prid>ID Impresora</th>";
   //myTable+= "<th headers=co-job-owner>Owner</th>";
-  myTable+= "<th headers=co-job-file>Archivo</th></tr></thead>";
+  if(detalleJobArchivo) myTable+= "<th headers=co-job-file>Archivo</th></tr></thead>";
   myTable+= "<tbody>";
 
   for (let i = 0; i < Pmgr.globalState.jobs.length ; i++) {
     
     let pr = Pmgr.globalState.printers.find(p => p.id == Pmgr.globalState.jobs[i].printer);
-
-    myTable+="<tr><td>" + Pmgr.globalState.jobs[i].id + "</td>";
-    myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
-    myTable+="<td>" + Pmgr.globalState.jobs[i].printer + "</td>";
+    
+    myTable+="<tr>";
+    myTable+="<td>" + Pmgr.globalState.jobs[i].id + "</td>";
+    if(detalleJobImpresora) myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
+    if(detalleJobID) myTable+="<td>" + Pmgr.globalState.jobs[i].printer + "</td>";
     //myTable+="<td>" + Pmgr.globalState.jobs[i].owner + "</td>";
-    myTable+="<td>" + Pmgr.globalState.jobs[i].fileName + "</td>";
+    if(detalleJobArchivo)myTable+="<td>" + Pmgr.globalState.jobs[i].fileName + "</td>";
     myTable+="</tr>";
   }
     

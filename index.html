@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/custom.css">
 
-    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel|Fauna+One">
     <script class="cssdeck" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-    
-    <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
 
+    <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
+    <script src="https://kit.fontawesome.com/294047ab58.js" crossorigin="anonymous"></script>
+   
     <!-- Esto aparece como título de la ventana o pestaña en el navegador: cámbialo -->
     <title>Printer</title>
 </head>
@@ -46,29 +47,29 @@
     
     <div class="tab-content" id="myTabContent">
       <!--//////////////////////////////////////PANTALLA IMPRESORAS/////////////////////////////////////////////////-->
-      <div class="tab-pane fade show active appTableDiv" id="printers" role="tabpanel" aria-labelledby="printers-tab">
+      <div class="tab-pane fade show active appTableDiv " id="printers" role="tabpanel" aria-labelledby="printers-tab">
           <div class="container-fluid">
               <!-- Cabecera tabla-->
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addImp" id="addPrinterButton">Añadir</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addImp" id="addPrinterButton"><i class="fas fa-plus"></i></button>
 
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmImp" id="rmPrinterButton" disabled>Eliminar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmImp" id="rmPrinterButton" disabled><i class="fas fa-trash-alt"></i></button>
 
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp" id="editPrinterButton" disabled>Editar</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editImp" id="editPrinterButton" disabled><i class="fas fa-edit"></i></button>
                   </div>
                   <div class="form-row justify-content-center">
-                      <button type="submit" id="printPrinterButton" class="btn btn-primary" data-toggle="modal"  data-target="#print" disabled>Imprimir</button>
-                      <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#cancel" disabled>Cancelar</button>
+                      <button type="submit" id="printPrinterButton" class="btn btn-primary" data-toggle="modal"  data-target="#print" disabled><i class="fas fa-print"></i></button>
+                      <button type="submit" id="cancelPrinterButton" class="btn btn-primary" data-toggle="modal" data-target="#cancel" disabled><i class="fas fa-ban"></i></button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="form-row field" id="searchform">
                           <input type="text" id="searchtermPrint" placeholder="Buscar"/>
                       
-                          <button type="submit" class="btn btn-primary">Buscar</button>
+                          <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
                           
-                          <button type="submit" id="filterPrButton" class="btn btn-primary" data-toggle="modal"  data-target="#filterPr">Filtros</button>
+                          <button type="submit" id="filterPrButton" class="btn btn-primary" data-toggle="modal"  data-target="#filterPr"><i class="fas fa-filter"></i></button>
                       </div>
                   </div>
               </div>
@@ -80,43 +81,39 @@
 
               <div class="dropdown" aria-haspopup="true" aria-expanded="false">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="detailsPrinters" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
-                  Detalles
+                  <i class="fas fa-info"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="detailsPrinters">
-                  <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-alias" value="co-1" checked="checked"> 
-                    <label for="toggle-co-pr-alias">Alias</label>
-                  </li>
-                  <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-model" value="co-1" checked="checked"> 
+                   <li class="dropdown-item">
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-model" checked="checked"> 
                     <label for="toggle-co-pr-model">Modelo</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-local" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-local" checked="checked"> 
                     <label for="toggle-co-pr-local">Localización</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-ip" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-ip" checked="checked"> 
                     <label for="toggle-co-pr-ip">IP</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-groups" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-groups" checked="checked"> 
                     <label for="toggle-co-pr-groups">Grupos</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-status" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-status" checked="checked"> 
                     <label for="toggle-co-pr-status">Estado</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-jobs" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-pr-jobs" checked="checked"> 
                     <label for="toggle-co-pr-jobs">Trabajos</label>
                   </li>
                 </div>
               </div>
               
               <div class="container appTableContainer" id="printersContainer">
-                <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="printersTable">
-                  <table class="table table-bordered mb-0 table-hover" id ="tablePrinters">    
+                <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable " id="printersTable">
+                  <table class="table table-bordered mb-0 table-hover " id ="tablePrinters">    
                   </table>
                 </div>
               </div>
@@ -148,22 +145,22 @@
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo" id="addGroupButton">Crear</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo" id="rmGroupButton" disabled>Borrar</button>
-                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo" id="editGroupButton" disabled>Editar Grupo</button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addGrupo" id="addGroupButton"><i class="fas fa-plus"></i></button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#rmGrupo" id="rmGroupButton" disabled><i class="fas fa-trash-alt"></i></button>
+                      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupo" id="editGroupButton" disabled><i class="fas fa-edit"></i></button>
                       <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editGrupoCont" id="editGroupContentsButton" disabled>Editar Contenidos</button>
                   </div>
                   <div class="form-row justify-content-center">          
-                      <button type="submit" id="printGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#printG" disabled>Imprimir</button>
-                      <button type="submit" id="cancelGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#cancelGroups" disabled>Cancelar</button>
+                      <button type="submit" id="printGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#printG" disabled><i class="fas fa-print"></i></button>
+                      <button type="submit" id="cancelGroupButton" class="btn btn-primary" data-toggle="modal" data-target="#cancelGroups" disabled><i class="fas fa-ban"></i></button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="field" id="searchform">
                           <input type="text" id="searchtermGroup" placeholder="Buscar"/>
                       
-                          <button type="submit" id="searchGroups" class="btn btn-primary">Buscar</button>
+                          <button type="submit" id="searchGroups" class="btn btn-primary"><i class="fas fa-search"></i></button>
                           
-                          <button type="submit" id="filterGrButton" class="btn btn-primary" data-toggle="modal"  data-target="#filterGr">Filtros</button>
+                          <button type="submit" id="filterGrButton" class="btn btn-primary" data-toggle="modal"  data-target="#filterGr"><i class="fas fa-filter"></i></button>
                           
                       </div>
                   </div>
@@ -175,15 +172,15 @@
 
               <div class="dropdown" aria-haspopup="true" aria-expanded="false">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="detailsGroups" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
-                  Detalles
+                  <i class="fas fa-info"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="detailsGroups">
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-name" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-name" checked="checked"> 
                     <label for="toggle-co-gr-name">Nombre</label>
                   </li>
                   <li class="dropdown-item">
-                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-printers" value="co-1" checked="checked"> 
+                    <input type="checkbox" name="toggle-cols" id="toggle-co-gr-printers" checked="checked"> 
                     <label for="toggle-co-gr-printers">Impresoras</label>
                   </li>
                 </div>
@@ -191,7 +188,7 @@
 
               <div class="container appTableContainer" id="groupsContainer">
                 <div class="tableFixHead table-wrapper-scroll-y table-wrapper-scroll-x my-custom-scrollbar appTable" id="groupsTable">
-                  <table class="table table-bordered mb-0 table-hover" id ="tableGroups">    
+                  <table class="table table-bordered mb-0 table-hover " id ="tableGroups">    
                   </table>
                 </div>
               </div>
@@ -205,15 +202,15 @@
               <br>
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                   <div class="form-row justify-content-start">
-                    <button type="submit"class="btn btn-primary" data-toggle="modal" data-target="#stopJobs"id="cancelJobsButton" disabled>Cancelar</button>
+                    <button type="submit"class="btn btn-primary" data-toggle="modal" data-target="#stopJobs"id="cancelJobsButton" disabled><i class="fas fa-ban"></i></button>
                   </div>
                   <div class="form-row justify-content-end">            
                       <div class="field" id="searchform">
                           <input type="text" id="searchtermJobs" placeholder="Buscar"/>
                       
-                          <button type="submit" id="searchJobs" class="btn btn-primary">Buscar</button>
+                          <button type="submit" id="searchJobs" class="btn btn-primary"><i class="fas fa-search"></i></button>
                           
-                          <button type="submit" id="filterJoButton" class="btn btn-primary" data-toggle="modal" data-target="#filterJo">Filtros</button>
+                          <button type="submit" id="filterJoButton" class="btn btn-primary" data-toggle="modal" data-target="#filterJo"><i class="fas fa-filter"></i></button>
                           
                       </div>
                   </div>
@@ -225,7 +222,7 @@
 
               <div class="dropdown" aria-haspopup="true" aria-expanded="false">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="detailsJobs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="left: 80%; position: absolute;">
-                  Detalles
+                  <i class="fas fa-info"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="detailsJobs">
                   <li class="dropdown-item">
@@ -254,7 +251,7 @@
     </div>
     
 
-    <!--Añadir-->
+    <!--Añadir impresora-->
     <div class="modal fade" tabindex="-1" id="addImp" style="display: hidden;">
       <div class="modal-dialog">
         <div class="modal-content">
