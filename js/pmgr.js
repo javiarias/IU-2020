@@ -35,6 +35,7 @@ function generar_select_printers()
 {
   let editPrSelect = document.getElementById('editPrintersGr');
   let addPrSelect = document.getElementById('addPrintersGr');
+  let filterPrintersGr = document.getElementById('filterPrintersGr');
   
   let groupOptions = "";
   
@@ -42,14 +43,18 @@ function generar_select_printers()
   
   editPrSelect.innerHTML = groupOptions;
   addPrSelect.innerHTML = groupOptions;
+  filterPrintersGr.innerHTML = groupOptions;
   
   $("#editPrintersGr").multipleSelect('refresh');
   $("#addPrintersGr").multipleSelect('refresh');
+  $("#filterPrintersGr").multipleSelect('refresh');
+  
 }
 
 function generar_select_grupos()
 {
   let editSelect = document.getElementById('editGroupsPr');
+  let filterGroupsPr = document.getElementById('filterGroupsPr');
   let addSelect = document.getElementById('addGroupsPr');
   let editGroupsGrCont = document.getElementById('editGroupsGrCont');
   
@@ -60,8 +65,10 @@ function generar_select_grupos()
   editSelect.innerHTML = groupOptions;
   addSelect.innerHTML = groupOptions;
   editGroupsGrCont.innerHTML = groupOptions;
+  filterGroupsPr.innerHTML = groupOptions;
   
   $("#editGroupsPr").multipleSelect('refresh');
+  $("#filterGroupsPr").multipleSelect('refresh');
   $("#addGroupsPr").multipleSelect('refresh');
   $("#editGroupsGrCont").multipleSelect('refresh');
 }
