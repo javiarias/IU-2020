@@ -23,11 +23,70 @@
 
     <div class="container-fluid">
       <div class="card">
+        <div class="card-header" id="headingZero">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseZero"
+              aria-expanded="true" aria-controls="collapseZero">
+              <h2><b>✌️ Modificaciones hechas</b></h2>
+            </button>
+          </h2>
+        </div>
+
+        <div id="collapseZero" class="collapse" aria-labelledby="headingZero" data-parent="#accordionExample">
+          <div class="card-body">
+            <ul> 
+              <li> Filtrado implementado:
+                <ul>
+                  <li>La barra de búsqueda solo busca el Alias/Nombre/Archivo (en sus respectivas pestañas) de forma dinámica</li>
+                  <li>Ahora el botón de filtrado abre una ventana de filtrado avanzado, que permite filtrar por más campos</li>
+                  <li>De emplearse el filtrado avanzado, la barra de búsqueda se bloquea</li>
+                  <li>Para eliminar todos los filtros, hay un botón junto al de filtrado</li>
+                </ul>
+              </li>
+      
+              <br>
+
+              <li> Se pueden ocultar y mostrar secciones de la tabla </li>
+      
+              <br>
+
+              <li> La página está completamente funcional </li>
+      
+              <br>
+
+              <li> Añadida una indicación de qué se está eliminando/modificando/etc al tener muchos elementos seleccionados </li>
+      
+              <br>
+
+              <li> Iconos (menos en un botón, para el cual no encontramos icono adecuado) </li>
+      
+              <br>
+
+              <li> "Logo" </li>
+      
+              <br>
+
+              <li> La página se coloca y escala correctamente </li>
+      
+              <br>
+
+              <li> Drag & drop: puede arrastrarse un elemento al campo de "Archivo" (a la hora de imprimir) y toma el nombre del archivo. No sabemos por qué, pero no hay manera de sacar la ruta completa </li>
+
+              <br>
+
+              <li> Verificación de campos: a la hora de editar IPs se verifica que sea válida, y cuando se cambie el nombre/alias de un elemento o se cree uno nuevo, se comprueba que el nombre no se repita. También se comprueba que los rchivos introducidos al imprimir sean .pdf </li>
+
+              <br>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
         <div class="card-header" id="headingOne">
           <h2 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
               aria-expanded="true" aria-controls="collapseOne">
-              <h2><b>✌️ Modificaciones hechas</b></h2>
+              <h2><b>🕒 Versión anterior</b></h2>
             </button>
           </h2>
         </div>
@@ -86,14 +145,19 @@
           <h2 class="mb-0">
             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
               aria-expanded="false" aria-controls="collapseTwo">
-              <h2><b>😞 Cosas que faltan</b></h2>
+              <h2><b>😞 Problemas</b></h2>
             </button>
           </h2>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
           <div class="card-body">
             <ul>
-              <li>Busqueda y filtrado reflejado en la tabla.</li>
+              <li>Pueden darse errores al editar muchos grupos/impresoras con multiselección:
+                <ul>
+                  <li>A la hora de actualizar con .then(update) o update(); a secas, a veces pone información errónea (probablemente por no poder sincronizar bien)</li>
+                  <li>A la hora de editar los grupos de una impresora (o impresoras de un grupo), es posible que se dupliquen o no se borren del servidor. Actualizando mediante bucles funciona, pero con el nuevo método (actualización de pmgrapi.js) no</li>
+                </ul>
+              </li>
           <br>
               
             </ul>

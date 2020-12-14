@@ -59,13 +59,14 @@ const PrinterStates = {
  * Una impresora
  */
 class Printer {
-    constructor(id, alias, model, location, ip, queue, status) {
+    constructor(id, alias, model, location, ip, groups, queue, status) {
       this.id = id;
       this.alias = alias;
       this.model = model;
       this.location = location;
       this.ip = ip;
       this.queue = queue || [];
+      this.groups = groups || []
       Util.checkEnum(status, PrinterStates);
       this.status = status;
     }
@@ -204,6 +205,7 @@ class Util {
             Util.randomChoice(Util.randomModels),
             Util.randomChoice(Util.randomLocations),
             "192.168.0." + Util.randomInRange(10,250),
+            [],
             [],
             Util.randomChoice([
                 PrinterStates.PAUSED,

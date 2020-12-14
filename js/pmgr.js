@@ -18,11 +18,86 @@ import * as Pmgr from './Pmgrapi.js'
  * lo que quieras siempre y cuando no digas que lo escribiste tú o me persigas por haberlo escrito mal.
  */
 
-//
-// PARTE 1:
-// Código de comportamiento, que sólo se llama desde consola (para probarlo) o desde la parte 2,
-// en respuesta a algún evento.
-//
+
+function endsWith(str, suffix) {
+  return str.match(suffix+"$")==suffix;
+}
+
+function validateIP(ipaddress) 
+{
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))
+  {
+    return (true)
+  }
+  //alert("You have entered an invalid IP address!")
+  return (false)
+}
+
+$('.dropdown-toggle').on('click', function(event) {
+  $('.dropdown-menu').slideToggle();
+  event.stopPropagation();
+});
+
+$('.dropdown-menu').on('click', function(event) {
+  event.stopPropagation();
+});
+
+$(window).on('click', function() {
+  $('.dropdown-menu').slideUp();
+});
+
+document.getElementById('filePrPr').ondrop = dropHandler;
+document.getElementById('filePrPr').ondragover = dragOverHandler;
+document.getElementById('filePrGr').ondrop = dropHandler;
+document.getElementById('filePrGr').ondragover = dragOverHandler;
+
+function dropHandler(ev) {
+  console.log('File(s) dropped');
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  let fileName = "";
+
+  //si se da más de un archivo, solo cogemos el último
+
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file(s)
+    for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+      // If dropped items aren't files, reject them
+      if (ev.dataTransfer.items[i].kind === 'file')
+      {
+        var file = ev.dataTransfer.items[i].getAsFile();
+        fileName = file.name;
+        console.log('... file[' + i + '].name = ' + file.name);
+      }
+    }
+  } else {
+
+    // Use DataTransfer interface to access the file(s)
+    for (var i = 0; i < ev.dataTransfer.files.length; i++)
+    {
+      fileName = ev.dataTransfer.files[i].name;
+      console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+    }
+  }
+
+  ev.target.value = fileName;
+
+  let pdf = endsWith(fileName, ".pdf");
+
+  //haciendo esto podemos hacer la función común a todos los menús de impresión
+
+  ev.target.parentNode.nextSibling.nextSibling.hidden = pdf;
+
+  ev.target.parentNode.parentNode.nextSibling.nextSibling.children[1].disabled = !pdf;
+}
+function dragOverHandler(ev) {
+  // console.log('File(s) in drop zone'); 
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+}
 
 let MAX_SHOW_GROUPS = 10;
 let MAX_SHOW_PRINTERS = 8;
@@ -30,14 +105,25 @@ let MAX_SHOW_JOBS = 4;
 let detalleModelo = true; let detalleLocal = true; let detalleIP = true; let detalleGrupo = true; let detalleEstado = true; let detalleTrabajo = true;
 let detalleImpresoras = true; let detalleNombreGrupo = true;
 let detalleJobID = true; let detalleJobImpresora= true; let detalleJobArchivo= true;
-let filterAlias = "", filterGrupo = "", filterModelo = "", filterTrabajo = "", filterLocalizacion = "", filterEstado = "", filterIP = "";
+let filterAlias = "", filterGrupo = "", filterModelo = "", filterLocalizacion = "", filterEstado = "", filterIP = "";
+let filterName = "", filterImpresora = "";
+let filterImpresoraJob = "", filterArchivo = "";
 
 
 function generar_select_printers()
 {
+  $("#filterPrintersGr").multipleSelect('refresh');
+  $("#filterPrintersJo").multipleSelect('refresh');
+
   let editPrSelect = document.getElementById('editPrintersGr');
   let addPrSelect = document.getElementById('addPrintersGr');
   let filterPrintersGr = document.getElementById('filterPrintersGr');
+
+  let selGr = $("#filterPrintersGr").multipleSelect('getSelects');
+
+  let filterPrintersJo = document.getElementById('filterPrintersJo');
+
+  let selJo = $("#filterPrintersJo").multipleSelect('getSelects');
   
   let groupOptions = "";
   
@@ -45,18 +131,29 @@ function generar_select_printers()
   
   editPrSelect.innerHTML = groupOptions;
   addPrSelect.innerHTML = groupOptions;
+  
+  groupOptions = `<option value=""> -- </option>` + groupOptions;
+
   filterPrintersGr.innerHTML = groupOptions;
+  filterPrintersJo.innerHTML = groupOptions;
   
   $("#editPrintersGr").multipleSelect('refresh');
   $("#addPrintersGr").multipleSelect('refresh');
   $("#filterPrintersGr").multipleSelect('refresh');
-  
+  $("#filterPrintersGr").multipleSelect('setSelects', selGr);
+  $("#filterPrintersJo").multipleSelect('refresh');
+  $("#filterPrintersJo").multipleSelect('setSelects', selJo);
 }
 
 function generar_select_grupos()
 {
+  $("#filterGroupsPr").multipleSelect('refresh');
+
   let editSelect = document.getElementById('editGroupsPr');
   let filterGroupsPr = document.getElementById('filterGroupsPr');
+
+  let sel = $("#filterGroupsPr").multipleSelect('getSelects');
+
   let addSelect = document.getElementById('addGroupsPr');
   let editGroupsGrCont = document.getElementById('editGroupsGrCont');
   
@@ -67,15 +164,24 @@ function generar_select_grupos()
   editSelect.innerHTML = groupOptions;
   addSelect.innerHTML = groupOptions;
   editGroupsGrCont.innerHTML = groupOptions;
+
+  groupOptions = `<option value=""> -- </option>` + groupOptions;
   filterGroupsPr.innerHTML = groupOptions;
   
   $("#editGroupsPr").multipleSelect('refresh');
   $("#filterGroupsPr").multipleSelect('refresh');
+  $("#filterGroupsPr").multipleSelect('setSelects', sel);
   $("#addGroupsPr").multipleSelect('refresh');
   $("#editGroupsGrCont").multipleSelect('refresh');
 }
 
 function createPrinterItem(printer) {
+
+  //comprobación de filtros normal
+  if(!printer.alias.includes(filterAlias) || !printer.model.includes(filterModelo) || !printer.location.includes(filterLocalizacion) ||
+      !printer.status.includes(filterEstado) || !printer.ip.includes(filterIP))
+    return null;
+
 
   if(printer.status == Pmgr.PrinterStates.PAUSED && printer.queue.length > 0)
     printer.status = Pmgr.PrinterStates.PRINTING;
@@ -89,10 +195,10 @@ function createPrinterItem(printer) {
 
   // usar [] en las claves las evalua (ver https://stackoverflow.com/a/19837961/15472)
   const PS = Pmgr.PrinterStates;
-  let pillClass = { [PS.PAUSED] : "badge-secondary",
-                    [PS.PRINTING] : "badge-success",
-                    [PS.NO_INK] : "badge-danger",
-                    [PS.NO_PAPER] : "badge-danger" };
+  let pillClass = { "PAUSED" : "badge-secondary",
+                    "PRINTING" : "badge-success",
+                    "NO_INK" : "badge-danger",
+                    "NO_PAPER" : "badge-danger" };
 
   let allJobs = printer.queue.map((id) =>
      `<span class="badge badge-secondary">${id}</span>`
@@ -111,30 +217,37 @@ function createPrinterItem(printer) {
   //-------Grupos
   if(detalleGrupo)
   {
+    let esc = (printer.groups.length == 0);
+
     myTable+="<td>";
     let i = 0;
-    for (let j = 0; j < Pmgr.globalState.groups.length; j++)
+
+    printer.groups.forEach(gr =>
     {
-      let idG = Pmgr.globalState.groups[j].printers.findIndex(element => printer.id == element);
-      if(idG >= 0)
+      let idG = Pmgr.globalState.groups.find(element => gr == element.id);
+      
+      if(idG.name.includes(filterGrupo))
+        esc = true;
+
+      if(i < MAX_SHOW_PRINTERS)
       {
-        if(i < MAX_SHOW_PRINTERS)
-        {
-          myTable += `<span class="badge badge-pill badge-secondary">`;
-          myTable += Pmgr.globalState.groups[j].name;
-          myTable += `</span> `;
-        }
-        i++;
+        myTable += `<span class="badge badge-pill badge-secondary">`;
+        myTable += idG.name;
+        myTable += `</span> `;
       }
-    } 
-    if(i >= MAX_SHOW_PRINTERS)
+      i++;
+    });
+    if(i > 0 && i > MAX_SHOW_PRINTERS)
     {
       myTable += `<span class="badge badge-pill badge-secondary">+`;
-      myTable += i - MAX_SHOW_PRINTERS + 1;
+      myTable += i - MAX_SHOW_PRINTERS;
       myTable += `</span> `;
     }
   
     myTable += "</td>";
+
+    if(!esc)
+      return null;
   }
   //-------Estado---------------
   if(detalleEstado){
@@ -144,7 +257,9 @@ function createPrinterItem(printer) {
   }
 
   //-------JOBS---------------
-  if(detalleTrabajo){
+  if(detalleTrabajo)
+  {    
+
     myTable+="<td>";
   
     for (let i = 0; i < printer.queue.length && i < MAX_SHOW_JOBS; i++)
@@ -201,16 +316,6 @@ function selectAllToggle(e, t, selectedArray)
   }
 }
 
-
-//$("#tablePrinters").click(function(){
-//  $(this).addClass('selected').siblings().removeClass('selected');     
-//});
-
-//cuando se pulsa myBtn se llama a myFunction
-//document.getElementById("myBtn").onclick = function() {myFunction()};
-
-
-
 //--------------------------------GENERA TABLA PRINTERS------------------------------------------
 let tablaPrint = document.getElementById('tablePrinters'), 
 selected = tablaPrint.getElementsByClassName('selected');
@@ -249,16 +354,46 @@ function highlight(e) {
   {
     let text = selected[0].innerText;
     let arrayAux= text.split("\t");
-    document.getElementById('nombreEd').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreEl').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreEl2').innerHTML = "la impresora " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreCa').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreCa2').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreIm').innerHTML = "" + arrayAux[1];  //Igual vale para poner los nombres
+
+    let alias = Pmgr.globalState.printers.find(p => p.id == arrayAux[0]).alias;
+
+    document.getElementById('nombreEd').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2').innerHTML = "la impresora " + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa2').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreIm').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('listaEd').hidden = true;
+    document.getElementById('listaEl').hidden = true;
+    document.getElementById('listaCa').hidden = true;
+    document.getElementById('listaPr').hidden = true;
   }
   
   else if(selected.length > 1)
   {
+  
+    let allPrinters = "";
+    
+    selected.forEach(gr =>
+    {    
+      let text = gr.innerText;
+      let arrayAux= text.split("\t");
+
+      let alias = Pmgr.globalState.printers.find(p => p.id == arrayAux[0]).alias;
+
+      allPrinters += `<span class="badge badge-pill badge-secondary">${alias}</span>`;
+    });
+  
+    document.getElementById('listaCa').innerHTML = allPrinters;  //Igual vale para poner los nombres
+    document.getElementById('listaCa').hidden = false;
+    document.getElementById('listaPr').innerHTML = allPrinters;  //Igual vale para poner los nombres
+    document.getElementById('listaPr').hidden = false;
+    document.getElementById('listaEd').innerHTML = allPrinters;  //Igual vale para poner los nombres
+    document.getElementById('listaEd').hidden = false;
+    document.getElementById('listaEl').innerHTML = allPrinters;  //Igual vale para poner los nombres
+    document.getElementById('listaEl').hidden = false;
+
+
     let text = "múltiples impresoras";
     document.getElementById('nombreEd').innerHTML = text;  //Igual vale para poner los nombres
     document.getElementById('nombreEl').innerHTML = text;  //Igual vale para poner los nombres
@@ -268,53 +403,67 @@ function highlight(e) {
     document.getElementById('nombreIm').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
+
 //-------------------------DETALLES----------------------------------------------------------------------------->
 $("#toggle-co-pr-model").click(function(){
   detalleModelo = !detalleModelo
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-pr-local").click(function(){
   detalleLocal = !detalleLocal
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-pr-ip").click(function(){
   detalleIP = !detalleIP
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-pr-groups").click(function(){
   detalleGrupo = !detalleGrupo
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-pr-status").click(function(){
   detalleEstado = !detalleEstado
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-pr-jobs").click(function(){
   detalleTrabajo = !detalleTrabajo
+  this.children[0].toggleAttribute("checked");
   update();
 });
 
     //-----Detalles grupos---//
 $("#toggle-co-gr-name").click(function(){
   detalleNombreGrupo = !detalleNombreGrupo
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-gr-printers").click(function(){
   detalleImpresoras = !detalleImpresoras
+  this.children[0].toggleAttribute("checked");
   update();
 });
 
     //-----Detalles jobs---//
 $("#toggle-co-job-printer").click(function(){
   detalleJobImpresora = !detalleJobImpresora
+
+  this.children[0].toggleAttribute("checked");
+
   update();
 });
 $("#toggle-co-job-prid").click(function(){
   detalleJobID = !detalleJobID
+  this.children[0].toggleAttribute("checked");
   update();
 });
 $("#toggle-co-job-file").click(function(){
   detalleJobArchivo = !detalleJobArchivo
+  this.children[0].toggleAttribute("checked");
   update();
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////777
@@ -352,8 +501,6 @@ $("#confirmarCaPr").click(function()
   update();
 });
 
-document.getElementById('editStatePr').onchange = editStatePr;
-
 let editGroupsDisabled = false;
 
 $("#editCleanGroups").click(function()
@@ -381,10 +528,12 @@ $("#editPrinterButton").click(function()
 {
   let input = document.getElementById('editImp').children[0].children[0].children;
   
-  let alias = "", model = "", location = "", ip = "", status = "";
+  let alias = "", model = "", location = "", ip = "";
   
   if(selected.length == 1)
   {
+    input[2].children[0].children[1].disabled = false;
+
     let gr = Pmgr.globalState.groups;
     let text = selected[0].innerText;
     let arrayAux= text.split("\t");    
@@ -401,6 +550,8 @@ $("#editPrinterButton").click(function()
       id++;
     });
   }
+  else
+    input[2].children[0].children[1].disabled = true;
   
   
   $("#editGroupsPr").multipleSelect('refresh');
@@ -412,37 +563,57 @@ $("#editPrinterButton").click(function()
     let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
     
     alias = (alias == "" || alias == pr.alias) ? pr.alias : "<múltiples valores>";
-    let x = "WIP";
     model = (model == "" || model == pr.model) ? pr.model : "<múltiples valores>";
-    status = (status == "" || status == pr.status) ? pr.status : "<múltiples valores>";
     location = (location == "" || location == pr.location) ? pr.location : "<múltiples valores>";
     ip = (ip == "" || ip == pr.ip) ? pr.ip : "<múltiples valores>";
   }  
   
-  input[1].children[0].children[1].value = "";
-  input[3].children[0].children[1].value = "";
-  document.getElementById('editStatePr').value = status;
+  input[2].children[0].children[1].value = "";
+  input[4].children[0].children[1].value = "";
   input[5].children[0].children[1].value = "";
   input[6].children[0].children[1].value = "";
   
-  input[1].children[0].children[1].placeholder = alias;
-  input[3].children[0].children[1].placeholder = model;
+  input[2].children[0].children[1].placeholder = alias;
+  input[4].children[0].children[1].placeholder = model;
   input[5].children[0].children[1].placeholder = location;
   input[6].children[0].children[1].placeholder = ip;
   
+  document.getElementById('warningEdPr').hidden = true;
+  document.getElementById('warningEdIpPr').hidden = true;
+});
+
+$("#aliasEdPr").on("change keyup paste", function()
+{
+  let id = (!this.disabled) &&  (this.value != this.placeholder) && (Pmgr.globalState.printers.findIndex(pr => pr.alias == this.value) != -1);
+
+  document.getElementById('warningEdPr').hidden = !id;
+  document.getElementById('confirmarEdPr').disabled = id;
+});
+
+
+$("#ipEdPr").on("change keyup paste", function()
+{
+  let id = (this.value != this.placeholder) && !validateIP(this.value);
+
+  document.getElementById('warningEdIpPr').hidden = !id;
+  document.getElementById('confirmarEdPr').disabled = id;
 });
 
 
 $("#addPrinterButton").click(function()
 {
-  document.getElementById('confirmarAdPr').disabled = false;
+  document.getElementById('confirmarAdPr').disabled = true;
   
+  document.getElementById('warningAdPr').hidden = true;
   document.getElementById('aliasAdPr').value = "";
 });
 
 $("#aliasAdPr").on("change keyup paste", function()
 {
-  document.getElementById('confirmarAdPr').disabled = (this.value == "");
+  let id = Pmgr.globalState.printers.findIndex(pr => pr.alias == this.value) != -1;
+
+  document.getElementById('warningAdPr').hidden = !id;
+  document.getElementById('confirmarAdPr').disabled = (this.value == "") || id;
 });
 
 $("#confirmarAdPr").click(function(e)
@@ -456,13 +627,14 @@ $("#confirmarAdPr").click(function(e)
   
   //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
 
-  sel.forEach(name => {
+  for (let i = 0; i < sel.length; i++) {
+    const name = sel[i];
     let aux = Pmgr.globalState.groups.filter(p => p.name == name);
     aux.forEach(gr => {
       if(selGrs.length == 0 || selGrs.findIndex(gID => gID == gr.id) < 0)
         selGrs.push(gr.id)
     });
-  });
+  }
 
 
   let pr = new Pmgr.Printer(
@@ -471,35 +643,28 @@ $("#confirmarAdPr").click(function(e)
     "-",
     "-",
     ip,
+    selGrs,
     [],
     Pmgr.PrinterStates.PAUSED
   );
 
-  Pmgr.addPrinter(pr).then(value => {
-
-    pr = Pmgr.globalState.printers[Pmgr.globalState.printers.length - 1];
-  
-    selGrs.forEach(grID =>
-    {
-      let gr = Pmgr.globalState.groups.find(g => g.id == grID);
-  
-      gr.printers.push(pr.id);
-  
-      Pmgr.setGroup(gr).then(update);
-    });
-    update();
-  });
+  Pmgr.addPrinter(pr).then(update);
 });
 
 
-$("#print").click(function()
+$("#printPrinterButton").click(function()
 {
-    document.getElementById('confirmarPrPr').disabled = true;
+  document.getElementById('filePrPr').value = "";
+  document.getElementById('warningPrPr').hidden = false;
+  document.getElementById('confirmarPrPr').disabled = true;
 });
 
 $("#filePrPr").on("change keyup paste", function()
 {
-  document.getElementById('confirmarPrPr').disabled = (this.value == "");
+  let pdf = endsWith(this.value, ".pdf");
+
+  document.getElementById('warningPrPr').hidden = pdf;
+  document.getElementById('confirmarPrPr').disabled = (this.value == "") || !pdf;
 });
 
 $("#confirmarPrPr").click(function(e)
@@ -537,33 +702,30 @@ $("#confirmarPrPr").click(function(e)
 $("#confirmarEdPr").click(function()
 {  
   
-  let alias = "", model = "", location = "", ip = "", status = "";
+  let alias = "", model = "", location = "", ip = "";
   
   let input = document.getElementById('editImp').children[0].children[0].children;
   
-  let groupSel = $("#editGroupsPr").multipleSelect('getSelects');  
+  let groupSel = $("#editGroupsPr").multipleSelect('getSelects');
+
+  let groupIDs = [];
 
   let idG = Pmgr.globalState.groups;
   
-  if(editGroupsDisabled || selected.length == 1 || (groupSel.length > 0 && selected.length > 1))
+  if(!editGroupsDisabled && (groupSel.length == 0 && selected.length > 1))
+    groupIDs = null;
+  
+  else if (!editGroupsDisabled)
   {
-    idG.forEach(g => {
-      for(let i = 0; i < selected.length; i++)
-      {
-        let text = selected[i].innerText;
-        let arrayAux = text.split("\t");
-        
-        let idG = g.printers.findIndex(element => arrayAux[0] == element);
-        if(idG >= 0)
-        g.printers.splice(idG, 1);
-      }
-    });
+    for (let i = 0; i < groupSel.length; i++) {
+      const n = groupSel[i];
+      groupIDs.push(idG.find(gr => gr.name == n).id);
+    }
   }
   
   
-  alias = input[1].children[0].children[1].value;
-  model = input[3].children[0].children[1].value;
-  status = document.getElementById('editStatePr').value;
+  alias = input[2].children[0].children[1].value;
+  model = input[4].children[0].children[1].value;
   location = input[5].children[0].children[1].value;
   ip = input[6].children[0].children[1].value;
   
@@ -574,27 +736,22 @@ $("#confirmarEdPr").click(function()
     let pr = Pmgr.globalState.printers.find(el => el.id == arrayAux[0]);
     
     pr.alias = (alias == "" || alias == "<múltiples valores>") ? pr.alias : alias;
-    let x = "WIP";
     pr.model = (model == "" || model == "<múltiples valores>") ? pr.model : model;
-    pr.status = (status == "" || status == "<múltiples valores>") ? pr.status : status;
     pr.location = (location == "" || location == "<múltiples valores>") ? pr.location : location;
     pr.ip = (ip == "" || ip == "<múltiples valores>") ? pr.ip : ip;
-    
-    if(!editGroupsDisabled)
-    {
-      for(let j = 0; j < groupSel.length; j++)
-      {
-        pr.group = groupSel[j];
-        
-        idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
-      }
-    }
+
+    if(groupIDs != null)
+      pr.groups = groupIDs;
+
+    Pmgr.setPrinter(pr).then(update);
   }
   
   
   editGroupsDisabled = false;
   
-  setCleanGroups();  
+  setCleanGroups();
+
+  update();
 });
 
 
@@ -630,7 +787,10 @@ function generar_tabla(){
   myTable+= "<tbody>";
 
   for (let i = 0; i < Pmgr.globalState.printers.length ; i++) {
-    myTable += createPrinterItem(Pmgr.globalState.printers[i])
+    let aux = createPrinterItem(Pmgr.globalState.printers[i])
+
+    if(aux != null)
+      myTable += aux;
   }
    
    myTable+="</tbody></table>";
@@ -674,33 +834,83 @@ function highlightGroup(e)
   document.getElementById('printGroupButton').disabled= (selectedGroup.length == 0);
   document.getElementById('cancelGroupButton').disabled= (selectedGroup.length == 0);
   document.getElementById('editGroupContentsButton').disabled = (selectedGroup.length == 0);
+
+  
+  let allPrinters = "";
+
+  let prID = [];
+  
+  selectedGroup.forEach(gr =>
+  {    
+    let text = gr.innerText;
+    let arrayAux= text.split("\t");
+
+    let gr_ = Pmgr.globalState.groups.find(g => g.id == arrayAux[0]).printers;
+
+    gr_.forEach(pr =>
+    {
+      if(prID.findIndex(p => p == pr) == -1)
+      {
+        prID.push(pr);
+        let alias = Pmgr.globalState.printers.find(l => l.id == pr).alias;
+
+        allPrinters += `<span class="badge badge-pill badge-secondary">${alias}</span>`;
+      }
+    });
+  });
+
+  document.getElementById('listaEdGCont').innerHTML = allPrinters;  //Igual vale para poner los nombres
+  document.getElementById('listaEdGCont').hidden = false;
+  document.getElementById('listaCaG').innerHTML = allPrinters;  //Igual vale para poner los nombres
+  document.getElementById('listaCaG').hidden = false;
+  document.getElementById('listaPrG').innerHTML = allPrinters;  //Igual vale para poner los nombres
+  document.getElementById('listaPrG').hidden = false;
   
   if(selectedGroup.length == 1)
   {
     let text = selectedGroup[0].innerText;
     let arrayAux= text.split("\t");
-    document.getElementById('nombreEdG').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreEdGCont').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreElG').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreEl2G').innerHTML = "el grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreCaG').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreCa2G').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
-    document.getElementById('nombreImG').innerHTML = "grupo " + arrayAux[1];  //Igual vale para poner los nombres
+
+    let name = Pmgr.globalState.groups.find(p => p.id == arrayAux[0]).name;
+
+    document.getElementById('nombreEdG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreEdGCont').innerHTML = "impresoras de grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreElG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2G').innerHTML = "el grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreCaG').innerHTML = "trabajos del grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreImG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('listaEdG').hidden = true;
+    document.getElementById('listaElG').hidden = true;
   }
   
   else if(selectedGroup.length > 1)
   {
+    let allGroups = "";
+  
+    selectedGroup.forEach(gr =>
+    {    
+      let text = gr.innerText;
+      let arrayAux= text.split("\t");
+
+      let name = Pmgr.globalState.groups.find(p => p.id == arrayAux[0]).name;
+
+      allGroups += `<span class="badge badge-pill badge-secondary">${name}</span>`;
+    });
+
+    document.getElementById('listaEdG').innerHTML = allGroups;  //Igual vale para poner los nombres
+    document.getElementById('listaEdG').hidden = false;
+    document.getElementById('listaElG').innerHTML = allGroups;  //Igual vale para poner los nombres
+    document.getElementById('listaElG').hidden = false;
+
     let text = "múltiples grupos";
     document.getElementById('nombreEdG').innerHTML = text;  //Igual vale para poner los nombres
-    document.getElementById('nombreEdGCont').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEdGCont').innerHTML = "impresoras de " + text;  //Igual vale para poner los nombres
     document.getElementById('nombreElG').innerHTML = text;  //Igual vale para poner los nombres
     document.getElementById('nombreEl2G').innerHTML = text;  //Igual vale para poner los nombres
-    document.getElementById('nombreCaG').innerHTML = text;  //Igual vale para poner los nombres
-    document.getElementById('nombreCa2G').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreCaG').innerHTML = "trabajos de " + text;  //Igual vale para poner los nombres
     document.getElementById('nombreImG').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
-document.getElementById('editStatePr').onchange = editStatePr;
 
 let editGroupsDisabledGr = false;
 
@@ -732,38 +942,59 @@ $("#editGroupContentsButton").click(function()
   let alias = "", model = "", location = "", ip = "", status = "";
   
   $("#editGroupsGrCont").multipleSelect('refresh');
+
+  let multiple = (selectedGroup.length > 1);
   
   for(let i = 0; i < selectedGroup.length; i++)
   {
     let text = selectedGroup[i].innerText;
     let arrayAux= text.split("\t");
     let gr = Pmgr.globalState.groups.find(el => el.id == arrayAux[0]);
+
+    multiple |= (gr.printers.length > 1);
     
     gr.printers.forEach(pID =>{
       let pr = Pmgr.globalState.printers.find(el => el.id == pID);
       
       alias = (alias == "" || alias == pr.alias) ? pr.alias : "<múltiples valores>";
-      let x = "WIP";
       model = (model == "" || model == pr.model) ? pr.model : "<múltiples valores>";
-      status = (status == "" || status == pr.status) ? pr.status : "<múltiples valores>";
       location = (location == "" || location == pr.location) ? pr.location : "<múltiples valores>";
       ip = (ip == "" || ip == pr.ip) ? pr.ip : "<múltiples valores>";
       
     });
   }
   
-  
-  input[1].children[0].children[1].value = "";
-  input[3].children[0].children[1].value = "";
-  document.getElementById('editStateGrCont').value = status;
+  input[2].children[0].children[1].value = "";
+  input[4].children[0].children[1].value = "";
   input[5].children[0].children[1].value = "";
   input[6].children[0].children[1].value = "";
   
-  input[1].children[0].children[1].placeholder = alias;
-  input[3].children[0].children[1].placeholder = model;
+  input[2].children[0].children[1].placeholder = alias;
+  input[4].children[0].children[1].placeholder = model;
   input[5].children[0].children[1].placeholder = location;
   input[6].children[0].children[1].placeholder = ip;
   
+
+  document.getElementById('aliasEdGrCont').disabled = multiple;
+  document.getElementById('warningEdGrCont').hidden = true;
+  document.getElementById('warningEdIpGrCont').hidden = true;
+});
+
+
+$("#aliasEdGrCont").on("change keyup paste", function()
+{
+  let id = (!this.disabled) && (this.value != this.placeholder) && (Pmgr.globalState.printers.findIndex(pr => pr.alias == this.value) != -1);
+
+  document.getElementById('warningEdGrCont').hidden = !id;
+  document.getElementById('confirmarEdGrCont').disabled = id;
+});
+
+$("#ipEdGrCont").on("change keyup paste", function()
+{
+  let id = (this.value != this.placeholder) && !validateIP(this.value);
+
+  document.getElementById('warningEdIpGrCont').hidden = !id;
+  document.getElementById('confirmarEdGrCont').disabled = id;
 });
 
 $("#confirmarEdGrCont").click(function()
@@ -772,20 +1003,21 @@ $("#confirmarEdGrCont").click(function()
   
   let input = document.getElementById('editGrupoCont').children[0].children[0].children;
 
-  let sel = $("#editPrintersGrCont").multipleSelect('getSelects');
+  let sel = $("#editGroupsGrCont").multipleSelect('getSelects');
   let groupSel = [];
+
+  let idG = Pmgr.globalState.groups;
   
-  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
-
-  sel.forEach(name => {
-    let aux = Pmgr.globalState.groups.filter(p => p.name == name);
-    aux.forEach(gr => {
-      if(groupSel.length == 0 || groupSel.findIndex(gID => gID == gr.id) < 0)
-        groupSel.push(gr.id)
-    });
-  });
-
-  let idG = Pmgr.globalState.groups;  
+  if(!editGroupsDisabled && sel.length == 0)
+    groupSel = null;
+  
+  else if (!editGroupsDisabled)
+  {
+    for (let i = 0; i < sel.length; i++) {
+      const n = sel[i];
+      groupSel.push(idG.find(gr => gr.name == n).id);
+    }
+  }
   
   let prIDs = [];
 
@@ -802,22 +1034,8 @@ $("#confirmarEdGrCont").click(function()
         {
           prIDs.push(pID);
           
-          if(editGroupsDisabledGr || (groupSel.length > 0 && selectedGroup.length > 0))
-          {
-            idG.forEach(g => {
-              for(let i = 0; i < selectedGroup.length; i++)
-              {
-                
-                let idG = g.printers.findIndex(element => pID == element);
-                if(idG >= 0)
-                g.printers.splice(idG, 1);
-              }
-            });
-          }
-          
-          alias = input[1].children[0].children[1].value;
-          model = input[3].children[0].children[1].value;
-          status = document.getElementById('editStatePr').value;
+          alias = input[2].children[0].children[1].value;
+          model = input[4].children[0].children[1].value;
           location = input[5].children[0].children[1].value;
           ip = input[6].children[0].children[1].value;
           
@@ -825,25 +1043,15 @@ $("#confirmarEdGrCont").click(function()
           
           pr.alias = (alias == "" || alias == "<múltiples valores>") ? pr.alias : alias;
           pr.model = (model == "" || model == "<múltiples valores>") ? pr.model : model;
-          pr.status = (status == "" || status == "<múltiples valores>") ? pr.status : status;
           pr.location = (location == "" || location == "<múltiples valores>") ? pr.location : location;
           pr.ip = (ip == "" || ip == "<múltiples valores>") ? pr.ip : ip;
-          
-          if(!editGroupsDisabledGr)
-          {
-            for(let j = 0; j < groupSel.length; j++)
-            {
-              pr.group = groupSel[j];
-              
-              idG.find(g => g.name == groupSel[j]).printers.push(pr.id);
-            }
-          }
+
+          if(groupSel != null)
+            pr.groups = groupSel;
 
           Pmgr.setPrinter(pr).then(update);
         }
       });
-        
-      Pmgr.setGroup(group).then(update);
     }
     
     editGroupsDisabledGr = false;
@@ -853,91 +1061,107 @@ $("#confirmarEdGrCont").click(function()
     update();
   });
   
-  $("#editGroupButton").click(function()
-  {
-    let input = document.getElementById('editGrupo').children[0].children[0].children;
-    
-    let name = "";  
-    
-    if(selectedGroup.length == 1)
-    {
-      let text = selectedGroup[0].innerText;
-      let arrayAux= text.split("\t");    
-      let aux = document.getElementById('editPrintersGr').options;
-      let gr = Pmgr.globalState.groups.find(el => el.id == arrayAux[0]);
-      
-      for (let i = 0; i < aux.length; i++)
-      {
-        let pr = Pmgr.globalState.printers.find(p => p.alias == aux[i].value);
-        let id = gr.printers.findIndex(p => p == pr.id);
-        
-        aux[i].removeAttribute('selected');
-        if(id >= 0)
-        aux[i].setAttribute('selected', 'selected');
-      }
-    }
-    
-    $("#editPrintersGr").multipleSelect('refresh');
-    
-    for(let i = 0; i < selectedGroup.length; i++)
-    {
-      let text = selectedGroup[i].innerText;
-      let arrayAux= text.split("\t");
-      
-      name = (name == "" || name == arrayAux[1]) ? arrayAux[1] : "<múltiples valores>";
-    }
-    
-    input[1].children[0].children[1].value = "";
-    
-    input[1].children[0].children[1].placeholder = name;
-    
-  });
+$("#editGroupButton").click(function()
+{
+  let input = document.getElementById('editGrupo').children[0].children[0].children;
   
+  let name = "";  
   
-  $("#confirmarEdGr").click(function()
+  if(selectedGroup.length == 1)
   {
-    let name = "";
+    input[2].children[0].children[1].disabled = false;
+
+    let text = selectedGroup[0].innerText;
+    let arrayAux= text.split("\t");    
+    let aux = document.getElementById('editPrintersGr').options;
+    let gr = Pmgr.globalState.groups.find(el => el.id == arrayAux[0]);
     
-    let input = document.getElementById('editGrupo').children[0].children[0].children;
+    for (let i = 0; i < aux.length; i++)
+    {
+      let pr = Pmgr.globalState.printers.find(p => p.alias == aux[i].value);
+      let id = gr.printers.findIndex(p => p == pr.id);
+      
+      aux[i].removeAttribute('selected');
+      if(id >= 0)
+      aux[i].setAttribute('selected', 'selected');
+    }
+  }
+  else
+    input[2].children[0].children[1].disabled = true;
+  
+  $("#editPrintersGr").multipleSelect('refresh');
+  
+  for(let i = 0; i < selectedGroup.length; i++)
+  {
+    let text = selectedGroup[i].innerText;
+    let arrayAux= text.split("\t");
     
+    let name_ = Pmgr.globalState.groups.find(p => p.id == arrayAux[0]).name;
+    
+    name = (name == "" || name == name_) ? name_ : "<múltiples valores>";
+  }
+  
+  input[2].children[0].children[1].value = "";
+  
+  input[2].children[0].children[1].placeholder = name;
+  
+  document.getElementById('warningEdGr').hidden = true;
+});
+
+$("#aliasEdGr").on("change keyup paste", function()
+{
+  let id = (this.value != this.placeholder) && (Pmgr.globalState.groups.findIndex(gr => gr.name == this.value) != -1);
+
+  document.getElementById('warningEdGr').hidden = !id;
+  document.getElementById('confirmarEdGr').disabled = id;
+});
+
+  
+$("#confirmarEdGr").click(function()
+{
+  let name = "";
+  
+  let input = document.getElementById('editGrupo').children[0].children[0].children;
+  
 
   let sel = $("#editPrintersGr").multipleSelect('getSelects');
   let groupSel = [];
-  
-  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
 
-  sel.forEach(alias => {
+  //con map no nos tiene en cuenta que 2 impresoras o 2 grupos tengan el mismo alias!
+  for (let i = 0; i < sel.length; i++) {
+    const alias = sel[i];
     let aux = Pmgr.globalState.printers.filter(p => p.alias == alias);
     aux.forEach(gr => {
       if(groupSel.length == 0 || groupSel.findIndex(gID => gID == gr.id) < 0)
         groupSel.push(gr.id)
     });
-  });
     
-    let idG = Pmgr.globalState.groups;
+  }
+  
+  let idG = Pmgr.globalState.groups;
 
-    for (let i = 0; i < selectedGroup.length; i++)
-    {
+  for (let i = 0; i < selectedGroup.length; i++)
+  {
 
-      let text = selectedGroup[i].innerText;
-      let arrayAux = text.split("\t");
-      let group = idG.find(g => g.id == arrayAux[0]);
-      
-      name = input[1].children[0].children[1].value;
-      
-      group.name = (name == "" || name == "<múltiples valores>") ? group.name : name;
-      
-      if(groupSel.length > 0 || selectedGroup.length == 1)
-        group.printers = groupSel;
+    let text = selectedGroup[i].innerText;
+    let arrayAux = text.split("\t");
+    let group = idG.find(g => g.id == arrayAux[0]);
+    
+    name = input[2].children[0].children[1].value;
+    
+    group.name = (name == "" || name == "<múltiples valores>") ? group.name : name;
+    
+    if(groupSel.length > 0 || selectedGroup.length == 1)
+      group.printers = groupSel;
 
-      Pmgr.setGroup(group).then(update);
-    }
+    Pmgr.setGroup(group).then(update);
+  }
 
-    update();
-  });
+  update();
+});
 
 
-  $("#selectAllGr").click(function()
+$("#selectAllGr").click(function()
 {
   let selectAll = (this.innerText != "Deseleccionar todo");
 
@@ -980,6 +1204,8 @@ $("#confirmarCaGr").click(function()
 $("#addGroupButton").click(function()
 {
   document.getElementById('confirmarAdGr').disabled = true;
+  
+  document.getElementById('warningAdGr').hidden = true;
 
   document.getElementById('aliasAdGr').value = "";
 
@@ -988,7 +1214,10 @@ $("#addGroupButton").click(function()
 
 $("#aliasAdGr").on("change keyup paste", function()
 {
-  document.getElementById('confirmarAdGr').disabled = (this.value == "");
+  let id = Pmgr.globalState.groups.findIndex(gr => gr.name == this.value) != -1;
+
+  document.getElementById('warningAdGr').hidden = !id;
+  document.getElementById('confirmarAdGr').disabled = (this.value == "") || id;
 });
 
 $("#confirmarAdGr").click(function(e)
@@ -1024,14 +1253,19 @@ $("#confirmarAdGr").click(function(e)
 
 });
 
-$("#printG").click(function()
+$("#printGroupButton").click(function()
 {
-    document.getElementById('confirmarPrGr').disabled = true;
+  document.getElementById('filePrGr').value = "";
+  document.getElementById('warningPrGr').hidden = false;
+  document.getElementById('confirmarPrGr').disabled = true;
 });
 
 $("#filePrGr").on("change keyup paste", function()
 {
-  document.getElementById('confirmarPrGr').disabled = (this.value == "");
+  let pdf = endsWith(this.value, ".pdf");
+
+  document.getElementById('warningPrGr').hidden = pdf;
+  document.getElementById('confirmarPrGr').disabled = (this.value == "") || !pdf;
 });
 
 $("#confirmarPrGr").click(function(e)
@@ -1059,7 +1293,7 @@ $("#confirmarPrGr").click(function(e)
     let job = new Pmgr.Job(
       0,
       pr.id,
-      "",
+      pr.alias,
       file
     );
 
@@ -1088,39 +1322,59 @@ $("#confirmarElGr").click(function()
   update();
 });
 
-function generar_tabla_grupos(){
+function generar_tabla_grupos()
+{
 
- let myTable= "<table class=table table-bordered mb-0 table-hover display>";
+  let myTable= "<table class=table table-bordered mb-0 table-hover display>";
 
- myTable+= " <thead><tr>";
- myTable+= "<th headers=co-gr-id>ID</th>";
- if(detalleNombreGrupo) myTable+= "<th headers=co-gr-name>Nombre</th>";
- if(detalleImpresoras) myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
- myTable+= "<tbody>";
+  myTable+= " <thead><tr>";
+  myTable+= "<th headers=co-gr-id>ID</th>";
+  if(detalleNombreGrupo) myTable+= "<th headers=co-gr-name>Nombre</th>";
+  if(detalleImpresoras) myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
+  myTable+= "<tbody>";
 
- for (let i = 0; i < Pmgr.globalState.groups.length ; i++) {
-      myTable+="<tr><td>" +Pmgr.globalState.groups[i].id + "</td>";  
-      if(detalleNombreGrupo) myTable+="<td>" + Pmgr.globalState.groups[i].name + "</td>";
-      if(detalleImpresoras){
-        myTable+="<td>";
+  for (let i = 0; i < Pmgr.globalState.groups.length ; i++) {
+
+    if(filterName != "" && filterName != Pmgr.globalState.groups[i].name)
+      continue;
+
+    let esc = (Pmgr.globalState.groups[i].printers == 0) || (!detalleImpresoras);
+
+    let aux = "";
+
+    aux +="<tr><td>" + Pmgr.globalState.groups[i].id + "</td>";  
+    if(detalleNombreGrupo) aux +="<td>" + Pmgr.globalState.groups[i].name + "</td>";
+    if(detalleImpresoras)
+    {
+
+      aux +="<td>";
+
+      
+      for(let p = 0; p < Pmgr.globalState.groups[i].printers.length; ++p )
+      {
+        let auxPr = Pmgr.globalState.groups[i].printers[p];
+        let print = Pmgr.globalState.printers.find(element => element.id == auxPr);
         
-        for(let p = 0; p < Pmgr.globalState.groups[i].printers.length && p < MAX_SHOW_GROUPS; ++p ){
-          let aux = Pmgr.globalState.groups[i].printers[p];
-          let print = Pmgr.globalState.printers.find(element => element.id == aux);
-          myTable +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
-          //myTable += "--";
-        }
-        
-        if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
-        {
-          myTable += `<span class="badge badge-pill badge-secondary">+`;
-          myTable += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
-          myTable += `</span> `;
-        }
-        myTable+="</td>";
+        if(filterImpresora == "" || filterImpresora == print.alias)
+          esc = true;
+
+        if(p < MAX_SHOW_GROUPS)
+          aux +=  `<span class="badge badge-pill badge-secondary">${print.alias}</span> `;
       }
-      myTable+= "</tr>";
- }
+      
+      if(Pmgr.globalState.groups[i].printers.length > MAX_SHOW_GROUPS)
+      {
+        aux += `<span class="badge badge-pill badge-secondary">+`;
+        aux += Pmgr.globalState.groups[i].printers.length - MAX_SHOW_GROUPS;
+        aux += `</span> `;
+      }
+      aux+="</td>";
+    }
+    aux+= "</tr>";
+
+    if(esc)
+      myTable += aux;
+  }
 
    myTable+="</tbody></table>";
    document.getElementById('tableGroups').innerHTML = myTable;
@@ -1166,12 +1420,31 @@ function highlightJobs(e)
   if(selectedJobs.length == 1)
   {
     let text = selectedJobs[0].innerText;
-    let arrayAux= text.split("\t");    
-    document.getElementById('nombreCaJ').innerHTML = arrayAux[3];  //Igual vale para poner los nombres
+    let arrayAux= text.split("\t");
+    
+    let name = Pmgr.globalState.jobs.find(p => p.id == arrayAux[0]).name;
+
+    document.getElementById('nombreCaJ').innerHTML = "el archivo " + name;  //Igual vale para poner los nombres
+    document.getElementById('listaCaJo').hidden = true;
   }
   
   else if(selectedJobs.length > 1)
-  {
+  {  
+    let allJobs = "";
+    
+    selectedJobs.forEach(gr =>
+    {    
+      let text = gr.innerText;
+      let arrayAux= text.split("\t");
+    
+      let name = Pmgr.globalState.jobs.find(p => p.id == arrayAux[0]).fileName;
+
+      allJobs += `<span class="badge badge-pill badge-secondary">${name}</span>`;
+    });
+  
+    document.getElementById('listaCaJo').innerHTML = allJobs;  //Igual vale para poner los nombres
+    document.getElementById('listaCaJo').hidden = false;
+
     let text = "múltiples trabajos";
     document.getElementById('nombreCaJ').innerHTML = text;  //Igual vale para poner los nombres
   }
@@ -1225,7 +1498,13 @@ function generar_tabla_jobs()
   if(detalleJobArchivo) myTable+= "<th headers=co-job-file>Archivo</th></tr></thead>";
   myTable+= "<tbody>";
 
-  for (let i = 0; i < Pmgr.globalState.jobs.length ; i++) {
+  for (let i = 0; i < Pmgr.globalState.jobs.length ; i++)
+  {
+    if(filterImpresoraJob != "" && filterImpresoraJob != Pmgr.globalState.jobs[i].owner)
+      continue;
+    
+    if(filterArchivo != "" && filterArchivo != Pmgr.globalState.jobs[i].fileName)
+      continue;
     
     let pr = Pmgr.globalState.printers.find(p => p.id == Pmgr.globalState.jobs[i].printer);
     
@@ -1310,6 +1589,178 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
           });
       }
 }
+
+$("#searchtermPrint").on("change paste keyup", function()
+{
+  filterAlias = this.value;
+
+  update();
+});
+
+$("#searchtermGroup").on("change paste keyup", function()
+{
+  filterName = this.value;
+
+  update();
+});
+
+$("#searchtermJob").on("change paste keyup", function()
+{
+  filterArchivo = this.value;
+
+  update();
+});
+
+$("#filterPrErase").click(function(e)
+{
+  filterAlias = filterGrupo = filterModelo = filterEstado = filterLocalizacion = filterIP = "";
+
+  let aux = document.getElementById("confirmarFilterPr").parentNode.parentNode.children;
+  aux[1].children[0].children[1].value = aux[3].children[0].children[1].value = aux[4].children[0].children[1].value = aux[5].children[0].children[1].value = aux[6].children[0].children[1].value = "";
+  
+  $("#filterGroupsPr").multipleSelect('setSelects', []);
+  $("#filterGroupsPr").multipleSelect('refresh');
+  
+  document.getElementById("searchtermPrint").disabled = false;
+  document.getElementById("searchtermPrint").value = "";
+
+  update();
+});
+
+$("#filterGrErase").click(function(e)
+{
+  filterName = filterImpresora = "";
+
+  let aux = document.getElementById("confirmarFilterGr").parentNode.parentNode.children;
+  aux[1].children[0].children[1].value = "";
+  
+  $("#filterPrintersGr").multipleSelect('setSelects', []);
+  $("#filterPrintersGr").multipleSelect('refresh');
+
+  document.getElementById("searchtermGroup").disabled = false;
+  document.getElementById("searchtermGroup").value = "";
+
+  update();
+});
+
+$("#filterJoErase").click(function(e)
+{
+  filterArchivo = filterImpresoraJob = "";
+
+  let aux = document.getElementById("confirmarFilterJo").parentNode.parentNode.children;
+  aux[2].children[0].children[1].value = "";
+  
+  $("#filterPrintersJo").multipleSelect('setSelects', []);
+  $("#filterPrintersJo").multipleSelect('refresh');
+
+  document.getElementById("searchtermJobs").disabled = false;
+  document.getElementById("searchtermJobs").value = "";
+
+  update();
+});
+
+$("#filterPrButton").click(function(e)
+{
+  document.getElementById("confirmarFilterPr").parentNode.parentNode.children[1].children[0].children[1].value = filterAlias;
+});
+
+$("#filterGrButton").click(function(e)
+{
+  document.getElementById("confirmarFilterGr").parentNode.parentNode.children[1].children[0].children[1].value = filterName;
+});
+
+$("#filterJoButton").click(function(e)
+{
+  document.getElementById("confirmarFilterJo").parentNode.parentNode.children[2].children[0].children[1].value = filterArchivo;
+});
+
+$("#confirmarFilterPr").click(function(e)
+{
+  let input = this.parentNode.parentNode.children;
+
+  filterAlias = input[1].children[0].children[1].value;
+
+  let sel = $("#filterGroupsPr").multipleSelect('getSelects');
+  if(sel.length == 0)
+    filterGrupo = "";
+  else
+    filterGrupo = sel[0];
+
+  filterModelo = input[3].children[0].children[1].value;
+  filterEstado = input[4].children[0].children[1].value
+  filterLocalizacion = input[5].children[0].children[1].value;
+  filterIP = input[6].children[0].children[1].value;
+
+  if(filterAlias == "" && filterGrupo == "" && filterModelo == "" && filterEstado == "" && filterModelo == "" && filterLocalizacion == "" && filterIP == "")
+  {
+    document.getElementById("searchtermPrint").disabled = false;
+    document.getElementById("searchtermPrint").value = "";
+  }
+  else
+  {
+    document.getElementById("searchtermPrint").disabled = true;
+    document.getElementById("searchtermPrint").value = "Usando filtros avanzados";
+  }
+
+  update();
+});
+
+
+$("#confirmarFilterGr").click(function()
+{  
+  let input = this.parentNode.parentNode.children;
+
+  filterName = input[1].children[0].children[1].value;
+
+  let sel = $("#filterPrintersGr").multipleSelect('getSelects');
+  if(sel.length == 0)
+    filterImpresora = "";
+  else
+    filterImpresora = sel[0];
+    
+
+  if(filterName == "" && filterImpresora == "")
+  {
+    document.getElementById("searchtermGroup").disabled = false;
+    document.getElementById("searchtermGroup").value = "";
+  }
+  else
+  {
+    document.getElementById("searchtermGroup").disabled = true;
+    document.getElementById("searchtermGroup").value = "Usando filtros avanzados";
+  }
+
+  update();
+});
+
+
+$("#confirmarFilterJo").click(function()
+{  
+  let input = this.parentNode.parentNode.children;
+
+  filterArchivo = input[2].children[0].children[1].value;
+
+  let sel = $("#filterPrintersJo").multipleSelect('getSelects');
+  if(sel.length == 0)
+    filterImpresoraJob = "";
+  else
+    filterImpresoraJob = sel[0];
+    
+
+  if(filterArchivo == "" && filterImpresoraJob == "")
+  {
+    document.getElementById("searchtermJobs").disabled = false;
+    document.getElementById("searchtermJobs").value = "";
+  }
+  else
+  {
+    document.getElementById("searchtermJobs").disabled = true;
+    document.getElementById("searchtermJobs").value = "Usando filtros avanzados";
+  }
+  
+
+  update();
+});
 
 //
 // PARTE 2:
