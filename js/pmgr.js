@@ -1,6 +1,6 @@
 "use strict"
 
-import * as Pmgr from './pmgrapi.js'
+import * as Pmgr from './Pmgrapi.js'
 
 
 /**
@@ -207,7 +207,7 @@ function createPrinterItem(printer) {
   let myTable = "";
   
   //Esto se muestra siempre
-  //myTable+="<tr><td>" + printer.id + "</td>";
+  myTable+="<tr><td>" + printer.id + "</td>";
   myTable+="<td>" + printer.alias + "</td>";
 
   //Aqui se hace la distincion de que se muestra y que no
@@ -357,14 +357,12 @@ function highlight(e) {
 
     let alias = Pmgr.globalState.printers.find(p => p.id == arrayAux[0]).alias;
 
-    //Actualizamos los valores a mostrar por si el usuario quiere hacer
-    //algo con esa impresora
-    document.getElementById('nombreEd').innerHTML = "" + alias;  
-    document.getElementById('nombreEl').innerHTML = "" + alias;  
-    document.getElementById('nombreEl2').innerHTML = "la impresora " + alias;  
-    document.getElementById('nombreCa').innerHTML = "" + alias;  
-    document.getElementById('nombreCa2').innerHTML = "" + alias;  
-    document.getElementById('nombreIm').innerHTML = "" + alias;  
+    document.getElementById('nombreEd').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2').innerHTML = "la impresora " + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa2').innerHTML = "" + alias;  //Igual vale para poner los nombres
+    document.getElementById('nombreIm').innerHTML = "" + alias;  //Igual vale para poner los nombres
     document.getElementById('listaEd').hidden = true;
     document.getElementById('listaEl').hidden = true;
     document.getElementById('listaCa').hidden = true;
@@ -386,23 +384,23 @@ function highlight(e) {
       allPrinters += `<span class="badge badge-pill badge-secondary">${alias}</span>`;
     });
   
-    document.getElementById('listaCa').innerHTML = allPrinters;  
+    document.getElementById('listaCa').innerHTML = allPrinters;  //Igual vale para poner los nombres
     document.getElementById('listaCa').hidden = false;
-    document.getElementById('listaPr').innerHTML = allPrinters;  
+    document.getElementById('listaPr').innerHTML = allPrinters;  //Igual vale para poner los nombres
     document.getElementById('listaPr').hidden = false;
-    document.getElementById('listaEd').innerHTML = allPrinters;  
+    document.getElementById('listaEd').innerHTML = allPrinters;  //Igual vale para poner los nombres
     document.getElementById('listaEd').hidden = false;
-    document.getElementById('listaEl').innerHTML = allPrinters;  
+    document.getElementById('listaEl').innerHTML = allPrinters;  //Igual vale para poner los nombres
     document.getElementById('listaEl').hidden = false;
 
 
     let text = "múltiples impresoras";
-    document.getElementById('nombreEd').innerHTML = text;  
-    document.getElementById('nombreEl').innerHTML = text;  
-    document.getElementById('nombreEl2').innerHTML = text;  
-    document.getElementById('nombreCa').innerHTML = text;  
-    document.getElementById('nombreCa2').innerHTML = text;  
-    document.getElementById('nombreIm').innerHTML = text;  
+    document.getElementById('nombreEd').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreCa2').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreIm').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
 
@@ -776,7 +774,7 @@ function generar_tabla(){
 
   myTable+= " <thead><tr>";
 
-  //myTable+= "<th headers=co-pr-id>ID</th>";
+  myTable+= "<th headers=co-pr-id>ID</th>";
   myTable+= "<th headers=co-pr-alias>Alias</th>";
 
   if(detalleModelo) myTable+= "<th headers=co-pr-model>Modelo</th>";
@@ -861,11 +859,11 @@ function highlightGroup(e)
     });
   });
 
-  document.getElementById('listaEdGCont').innerHTML = allPrinters;  
+  document.getElementById('listaEdGCont').innerHTML = allPrinters;  //Igual vale para poner los nombres
   document.getElementById('listaEdGCont').hidden = false;
-  document.getElementById('listaCaG').innerHTML = allPrinters;  
+  document.getElementById('listaCaG').innerHTML = allPrinters;  //Igual vale para poner los nombres
   document.getElementById('listaCaG').hidden = false;
-  document.getElementById('listaPrG').innerHTML = allPrinters;  
+  document.getElementById('listaPrG').innerHTML = allPrinters;  //Igual vale para poner los nombres
   document.getElementById('listaPrG').hidden = false;
   
   if(selectedGroup.length == 1)
@@ -875,12 +873,12 @@ function highlightGroup(e)
 
     let name = Pmgr.globalState.groups.find(p => p.id == arrayAux[0]).name;
 
-    document.getElementById('nombreEdG').innerHTML = "grupo " + name;  
-    document.getElementById('nombreEdGCont').innerHTML = "impresoras de grupo " + name;  
-    document.getElementById('nombreElG').innerHTML = "grupo " + name;  
-    document.getElementById('nombreEl2G').innerHTML = "el grupo " + name;  
-    document.getElementById('nombreCaG').innerHTML = "trabajos del grupo " + name;  
-    document.getElementById('nombreImG').innerHTML = "grupo " + name;  
+    document.getElementById('nombreEdG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreEdGCont').innerHTML = "impresoras de grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreElG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2G').innerHTML = "el grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreCaG').innerHTML = "trabajos del grupo " + name;  //Igual vale para poner los nombres
+    document.getElementById('nombreImG').innerHTML = "grupo " + name;  //Igual vale para poner los nombres
     document.getElementById('listaEdG').hidden = true;
     document.getElementById('listaElG').hidden = true;
   }
@@ -899,18 +897,18 @@ function highlightGroup(e)
       allGroups += `<span class="badge badge-pill badge-secondary">${name}</span>`;
     });
 
-    document.getElementById('listaEdG').innerHTML = allGroups;  
+    document.getElementById('listaEdG').innerHTML = allGroups;  //Igual vale para poner los nombres
     document.getElementById('listaEdG').hidden = false;
-    document.getElementById('listaElG').innerHTML = allGroups;  
+    document.getElementById('listaElG').innerHTML = allGroups;  //Igual vale para poner los nombres
     document.getElementById('listaElG').hidden = false;
 
     let text = "múltiples grupos";
-    document.getElementById('nombreEdG').innerHTML = text;  
-    document.getElementById('nombreEdGCont').innerHTML = "impresoras de " + text;  
-    document.getElementById('nombreElG').innerHTML = text;  
-    document.getElementById('nombreEl2G').innerHTML = text;  
-    document.getElementById('nombreCaG').innerHTML = "trabajos de " + text;  
-    document.getElementById('nombreImG').innerHTML = text;  
+    document.getElementById('nombreEdG').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEdGCont').innerHTML = "impresoras de " + text;  //Igual vale para poner los nombres
+    document.getElementById('nombreElG').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreEl2G').innerHTML = text;  //Igual vale para poner los nombres
+    document.getElementById('nombreCaG').innerHTML = "trabajos de " + text;  //Igual vale para poner los nombres
+    document.getElementById('nombreImG').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
 
@@ -1330,7 +1328,7 @@ function generar_tabla_grupos()
   let myTable= "<table class=table table-bordered mb-0 table-hover display>";
 
   myTable+= " <thead><tr>";
-  //myTable+= "<th headers=co-gr-id>ID</th>";
+  myTable+= "<th headers=co-gr-id>ID</th>";
   if(detalleNombreGrupo) myTable+= "<th headers=co-gr-name>Nombre</th>";
   if(detalleImpresoras) myTable+= "<th headers=co-gr-printers>Impresoras</th></tr></thead>";
   myTable+= "<tbody>";
@@ -1344,8 +1342,7 @@ function generar_tabla_grupos()
 
     let aux = "";
 
-    aux +="<tr>";
-    //aux+="<td>" + Pmgr.globalState.groups[i].id + "</td>";  
+    aux +="<tr><td>" + Pmgr.globalState.groups[i].id + "</td>";  
     if(detalleNombreGrupo) aux +="<td>" + Pmgr.globalState.groups[i].name + "</td>";
     if(detalleImpresoras)
     {
@@ -1427,7 +1424,7 @@ function highlightJobs(e)
     
     let name = Pmgr.globalState.jobs.find(p => p.id == arrayAux[0]).name;
 
-    document.getElementById('nombreCaJ').innerHTML = "el archivo " + name;  
+    document.getElementById('nombreCaJ').innerHTML = "el archivo " + name;  //Igual vale para poner los nombres
     document.getElementById('listaCaJo').hidden = true;
   }
   
@@ -1445,11 +1442,11 @@ function highlightJobs(e)
       allJobs += `<span class="badge badge-pill badge-secondary">${name}</span>`;
     });
   
-    document.getElementById('listaCaJo').innerHTML = allJobs;  
+    document.getElementById('listaCaJo').innerHTML = allJobs;  //Igual vale para poner los nombres
     document.getElementById('listaCaJo').hidden = false;
 
     let text = "múltiples trabajos";
-    document.getElementById('nombreCaJ').innerHTML = text;  
+    document.getElementById('nombreCaJ').innerHTML = text;  //Igual vale para poner los nombres
   }
 }
 
